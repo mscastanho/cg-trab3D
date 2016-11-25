@@ -77,7 +77,7 @@ bool crossedCheckpoint = false;
 time_t seedMag;
 time_t seedSign;
 
-float camAngle = 0;
+GLuint asphaltTX;
 
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
@@ -441,9 +441,8 @@ void idle (void)
 	bool wPressed, sPressed, aPressed, dPressed;
 
 	dPressed = (keyStatus['D'] == 1 || keyStatus['d'] == 1) && wheelAngle > -45+ANGLE_SPEED;
-	if(dPressed) camAngle -=1;
+
 	aPressed = (keyStatus['A'] == 1 || keyStatus['a'] == 1) && wheelAngle < 45-ANGLE_SPEED;
-	if(aPressed) camAngle +=1;
 
 	wPressed = keyStatus['W'] == 1 || keyStatus['w'] == 1;
 
@@ -574,7 +573,6 @@ void display(void)
 
 	glLoadIdentity();
 //	glTranslatef(1.5f,0.0f,-7.0f);
-	cout << camAngle << endl;
 	gluLookAt(0,200,200,0,0,0,0,-1,1);
 
 	GLfloat light_position[] = { 200, 100, 100, 1.0 };
@@ -641,7 +639,8 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	glEnable(GL_TEXTURE_2D);
 
 	//Initialize textures
-	// TODO
+	int imgSize = 256;
+	asphaltTX = png_texture_load("./images/asphalt.png",&imgSize,&imgSize);
 
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);

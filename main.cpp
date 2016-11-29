@@ -83,6 +83,9 @@ GLuint groundTX;
 GLuint cementTX;
 GLuint stonewallTX;
 
+// Camera variables
+int toggleCam = 1;
+
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
 void setNewOrigin(){
@@ -388,7 +391,22 @@ void keyUp(unsigned char key, int x, int y)
 }
 void keyPress(unsigned char key, int x, int y)
 {
-	keyStatus[key] = 1;
+	//keyStatus[key] = 1;
+
+	switch(key)
+  {
+      case '1':
+          toggleCam = 1;
+          break;
+      case '2':
+          toggleCam = 2;
+          break;
+      case '3':
+          toggleCam = 3;
+          break;
+      default:
+          keyStatus[key] = 1;
+  }
 }
 
 // Check if any of element of a list of bullets has hit a car
@@ -577,9 +595,47 @@ void display(void)
 
 	glLoadIdentity();
 
-	gluLookAt(500,500,1200,0,0,0,-1,-1,1);
-
+	//Câmeras estáticas para testes
+	//gluLookAt(500,500,1200,0,0,0,-1,-1,1);
 	//gluLookAt(0,600,50,0,0,50,0,0,1);
+
+ float sizeOfCar = player->get_size()/2;
+ float angleOfCar = player->get_cAngle();
+
+ float xCameraRotated = cos((90 + angleOfCar)*M_PI/180);
+ float yCameraRotated = sin((90 + angleOfCar)*M_PI/180);
+
+ Point playerPos = player->get_position();
+
+ switch(toggleCam)
+ {
+		 case 1:
+
+				 gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Camera at the top front
+																																																		 //of the car
+										 playerPos.x+2*sizeOfCar*xCameraRotated,playerPos.y+2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Looking down
+										 0,0,1); //Lookup pointing to z axis(ceiling)
+
+
+				 /* O carro está considerado na origem.
+					* Com isso, estamos com a posição definida
+					* Basta apenas desenhar o carro na posição correta,
+					* E nessa expressão, os eixos x e y devem ser acrescidos da posição
+					* O centro da cena foi definido arbitrariamente, talvez deva ser estudado uma nova posição
+					* No final, o z do centro da cena deve coincidir com o z da posição da camera
+					* (deixei desalinhado para poder enxergar o eixo y, olhando para baixo)
+					*/
+				 break;
+		 case 2:
+				 /* Bem parecido com o de cima, vamos implementar quando tiver o canhão */
+				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
+				 break;
+		 case 3:
+				 /* Brincar com isso hoje a noite */
+				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
+				 break;
+ }
+
 	GLfloat light_position[] = { 200, 100, 100, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	GLfloat light_position2[] = { 100, 200, 200, 1.0 };
@@ -603,7 +659,11 @@ void display(void)
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	//player->draw();
+	player->draw();
+
+	vector<Car*>::iterator it;
+	for(it = enemies.begin();it != enemies.end(); it++)
+		(*it)->draw();
 
 
 	//Arena Out

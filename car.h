@@ -53,6 +53,7 @@ class Car {
 	void inc_cAngle(float da);
 	float get_cnAngle();
 	void inc_cnAngle(float da);
+	float get_size();
 
 	void draw ();
 

@@ -80,12 +80,16 @@ void Car::inc_position(float dx, float dy){
 	this->position.y += dy;
 }
 
+float Car::get_size(){
+  return this->size;
+}
+
 void Car::draw (){
 
   glPushMatrix();
 
-  //glTranslatef(this->position.x,this->position.y,0);
-  //glRotatef(this->carAngle,0,0,1.0);
+  glTranslatef(this->position.x,this->position.y,0);
+  glRotatef(this->carAngle,0,0,1.0);
   Color color;
   float L = this->size;
 
@@ -141,13 +145,13 @@ void Car::draw (){
 */
   //Back wheels
   glPushMatrix();
-  glTranslatef(-(bWidth/2+waWidth+wWidth),-(axisMidY + wRadius/2),0);
+  glTranslatef(-(bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
   solidCylinder(wRadius);
   glPopMatrix();
   //drawRect(wWidth,wHeight,color,-(bWidth/2+waWidth+wWidth),-(axisMidY + wHeight/2));
 
   glPushMatrix();
-  glTranslatef((bWidth/2+waWidth),-(axisMidY + wRadius/2),0);
+  glTranslatef((bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
   solidCylinder(wRadius);
   glPopMatrix();
 //  drawRect(wWidth,wHeight,color,(bWidth/2+waWidth),-(axisMidY + wHeight/2));

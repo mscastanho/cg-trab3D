@@ -7,6 +7,7 @@
 #include "circle.h"
 #include "misc.h"
 
+
 using namespace std;
 
 Circle::Circle(Point center, float r, Color c){
@@ -146,6 +147,225 @@ void drawCircle (float radius, Point center, Color color){
 		glVertex3f(x,y,1.0);
 	}
 	glEnd();
+
+	glPopMatrix();
+}
+
+//Draws a plane circle in the XY plane
+void drawCircle3D(float radius, Point center, GLuint texture){
+	glPushMatrix();
+	glTranslatef(center.x,center.y,center.z);
+
+	GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
+	GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
+	GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
+	GLfloat mat_shininess[] = { 100.0 };
+	glColor3f(1,1,1);
+
+	glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+	int i;
+	float x,y;
+	glBindTexture (GL_TEXTURE_2D, texture);
+	glBegin(GL_POLYGON);
+	// Let`s use 36 vertices to draw the circle as a polygon
+	for(i = 0 ; i < 360 ; i += 4 ){
+		glNormal3f(0,0,1); //always pointing up (z-axis)
+
+		float cossine = cos(M_PI*i/180.0);
+		float sine = sin(M_PI*i/180.0);
+
+		glTexCoord2f (cossine,sine);
+
+		x = radius*cossine;
+		y = radius*sine;
+
+		glVertex3f(x,y,0);
+	}
+	glEnd();
+
+	glPopMatrix();
+}
+
+void drawCurb3D(float radius, float thickness, float height, Point center, int stacks, int slices, GLuint texture){
+
+	glPushMatrix();
+	glTranslatef(center.x,center.y,center.z);
+
+	int i;
+	glBindTexture (GL_TEXTURE_2D, texture);
+	float angleStep = 360.0/slices;
+	float verticalStep = height/stacks;
+	float previousX = radius;
+	float previousY = 0;
+	float previousXin = radius-thickness;
+	float previousYin = 0;
+	for(i = angleStep ; i < 360 + angleStep ; i += angleStep ){
+
+
+		float x = radius*cos(M_PI*i/180.0);
+		float y = radius*sin(M_PI*i/180.0);
+
+		//Draw outside faces
+		/*	v2._____.v3
+			   	|			|
+			  	._____.
+				v1      v4
+		*/
+		glBegin(GL_QUADS);
+			//v1
+			glNormal3f(previousX,previousY,0);
+			glTexCoord2f(0,0);
+			glVertex3f(previousX,previousY,0);
+
+			//v2
+			glNormal3f(previousX,previousY,0);
+			glTexCoord2f(0,1);
+			glVertex3f(previousX,previousY,verticalStep);
+
+			//v3
+			glNormal3f(x,y,0);
+			glTexCoord2f(1,1);
+			glVertex3f(x,y,verticalStep);
+
+			//v4
+			glNormal3f(x,y,0);
+			glTexCoord2f(1,0);
+			glVertex3f(x,y,0);
+		glEnd();
+
+		//Draw inside faces
+		/*	v2._____.v3
+			   	|			|
+			  	._____.
+				v1      v4
+		*/
+
+	/*	float inRadius = radius - thickness;
+		float xin = inRadius*cos(M_PI*i/180.0);
+		float yin = inRadius*sin(M_PI*i/180.0);
+		glBegin(GL_TRIANGLE_STRIP);
+			//v4
+			glNormal3f(x,y,0);
+			glTexCoord2f(1,0);
+			glVertex3f(x,y,0);
+
+			//v3
+			glNormal3f(x,y,0);
+			glTexCoord2f(1,1);
+			glVertex3f(x,y,verticalStep);
+
+			//v2
+			glNormal3f(previousX,previousY,0);
+			glTexCoord2f(0,1);
+			glVertex3f(previousX,previousY,verticalStep);
+
+			//v1
+			glNormal3f(previousX,previouxY,0);
+			glTexCoord2f(0,0);
+			glVertex3f(previousX,previousY,0);
+
+
+		glEnd();
+*/
+		previousX = x;
+		previousY = y;
+
+	}
+
+	glPopMatrix();
+}
+
+void drawWallArena3D(float radius, float thickness, float height, Point center, int stacks, int slices, GLuint texture){
+
+	glPushMatrix();
+	glTranslatef(center.x,center.y,center.z);
+
+	int i;
+	glBindTexture (GL_TEXTURE_2D, texture);
+	float angleStep = 360.0/slices;
+	float verticalStep = height/stacks;
+	float previousX = radius;
+	float previousY = 0;
+	float previousXin = radius-thickness;
+	float previousYin = 0;
+	for(i = angleStep ; i < 360 + angleStep ; i += angleStep ){
+
+
+		float x = radius*cos(M_PI*i/180.0);
+		float y = radius*sin(M_PI*i/180.0);
+
+		//Draw outside faces
+		/*	v2._____.v3
+			   	|			|
+			  	._____.
+				v1      v4
+		*/
+		glBegin(GL_QUADS);
+			//v1
+			glNormal3f(-previousX,-previousY,0);
+			glTexCoord2f(0,0);
+			glVertex3f(previousX,previousY,0);
+
+			//v2
+			glNormal3f(-previousX,-previousY,0);
+			glTexCoord2f(0,1);
+			glVertex3f(previousX,previousY,verticalStep);
+
+			//v3
+			glNormal3f(-x,-y,0);
+			glTexCoord2f(1,1);
+			glVertex3f(x,y,verticalStep);
+
+			//v4
+			glNormal3f(-x,-y,0);
+			glTexCoord2f(1,0);
+			glVertex3f(x,y,0);
+		glEnd();
+
+		//Draw inside faces
+		/*	v2._____.v3
+			   	|			|
+			  	._____.
+				v1      v4
+		*/
+
+	/*	float inRadius = radius - thickness;
+		float xin = inRadius*cos(M_PI*i/180.0);
+		float yin = inRadius*sin(M_PI*i/180.0);
+		glBegin(GL_TRIANGLE_STRIP);
+			//v4
+			glNormal3f(x,y,0);
+			glTexCoord2f(1,0);
+			glVertex3f(x,y,0);
+
+			//v3
+			glNormal3f(x,y,0);
+			glTexCoord2f(1,1);
+			glVertex3f(x,y,verticalStep);
+
+			//v2
+			glNormal3f(previousX,previousY,0);
+			glTexCoord2f(0,1);
+			glVertex3f(previousX,previousY,verticalStep);
+
+			//v1
+			glNormal3f(previousX,previouxY,0);
+			glTexCoord2f(0,0);
+			glVertex3f(previousX,previousY,0);
+
+
+		glEnd();
+*/
+		previousX = x;
+		previousY = y;
+
+	}
 
 	glPopMatrix();
 }

@@ -8,7 +8,8 @@ compila:
 	g++ -c bullet.cpp -lGL -lGLU -lglut -lm
 	g++ -c car.cpp -lGL -lGLU -lglut
 	g++ -c input.cpp
-	g++ main.cpp -o trabalhocg tinyxml2.o misc.o rect.o circle.o bullet.o car.o input.o -lpng -lGL -lGLU -lglut -lm
+	g++ -c imageloader.cpp
+	g++ main.cpp -o trabalhocg tinyxml2.o misc.o rect.o circle.o bullet.o car.o input.o imageloader.o -lGL -lGLU -lglut -lm
 
 clean:
 	@rm -f *.o

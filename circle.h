@@ -32,5 +32,8 @@ class Circle {
 
 void drawCircle (float radius, Color color);
 void drawCircle (float radius, Point center, Color color);
+void drawCircle3D(float radius, Point center, GLuint texture);
+void drawCurb3D(float radius, float thickness, float height, Point center, int stacks, int slices, GLuint texture);
+void drawWallArena3D(float radius, float thickness, float height, Point center, int stacks, int slices, GLuint texture);
 
 #endif /* CIRCLE_H_ */

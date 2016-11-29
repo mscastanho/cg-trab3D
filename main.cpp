@@ -10,6 +10,7 @@
 #include "car.h"
 #include "bullet.h"
 #include <cmath>
+#include "imageloader.h"
 
 using namespace std;
 
@@ -78,6 +79,9 @@ time_t seedMag;
 time_t seedSign;
 
 GLuint asphaltTX;
+GLuint groundTX;
+GLuint cementTX;
+GLuint stonewallTX;
 
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
@@ -572,15 +576,18 @@ void display(void)
   //glViewport(0,0,windowWidth,windowHeight);
 
 	glLoadIdentity();
-//	glTranslatef(1.5f,0.0f,-7.0f);
-	gluLookAt(0,200,200,0,0,0,0,-1,1);
 
+	gluLookAt(500,500,1200,0,0,0,-1,-1,1);
+
+	//gluLookAt(0,600,50,0,0,50,0,0,1);
 	GLfloat light_position[] = { 200, 100, 100, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
 	GLfloat light_position2[] = { 100, 200, 200, 1.0 };
 	glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
 
-	DrawAxes(100);
+	//arenaOut->draw();
+	//arenaIn->draw();
+	//DrawAxes(100);
 //	glMatrixMode(GL_PROJECTION);
 	//glLoadIdentity();
 
@@ -596,9 +603,22 @@ void display(void)
 	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
 	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
 	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	player->draw();
+	//player->draw();
 
 
+	//Arena Out
+	Point originOut = {0,0,0};
+	float outRadius = arenaOut->get_radius();
+	drawCircle3D(outRadius,originOut,asphaltTX);
+
+	//Arena IN
+	Point originIn = {0,0,2};
+	float inRadius = arenaIn->get_radius();
+	drawCircle3D(inRadius,originIn,groundTX);
+
+	drawCurb3D(inRadius,1,100,originIn,1,72,cementTX);
+
+	drawWallArena3D(outRadius,1,200,originOut,1,72,stonewallTX);
 	/* Trocar buffers */
 	glutSwapBuffers();
 	gx = gy = 0;
@@ -623,6 +643,31 @@ void reshape (GLsizei width, GLsizei height){
 }
 
 
+GLuint LoadTextureRAW( const char * filename )
+{
+
+    GLuint texture;
+
+    Image* image = loadBMP(filename);
+
+    glGenTextures( 1, &texture );
+    glBindTexture( GL_TEXTURE_2D, texture );
+    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE,GL_MODULATE );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,GL_LINEAR );
+    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,GL_LINEAR );
+    glTexImage2D(GL_TEXTURE_2D,                //Always GL_TEXTURE_2D
+                             0,                            //0 for now
+                             GL_RGB,                       //Format OpenGL uses for image
+                             image->width, image->height,  //Width and height
+                             0,                            //The border of the image
+                             GL_RGB, //GL_RGB, because pixels are stored in RGB format
+                             GL_UNSIGNED_BYTE, //GL_UNSIGNED_BYTE, because pixels are stored
+                                               //as unsigned numbers
+                             image->pixels);               //The actual pixel data
+    delete image;
+
+    return texture;
+}
 
 void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 {
@@ -640,7 +685,10 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 
 	//Initialize textures
 	int imgSize = 256;
-	asphaltTX = png_texture_load("./images/asphalt.png",&imgSize,&imgSize);
+	asphaltTX = LoadTextureRAW("./images/asphalt.bmp");
+	groundTX = LoadTextureRAW("./images/ground.bmp");
+	cementTX = LoadTextureRAW("./images/cement.bmp");
+	stonewallTX = LoadTextureRAW("./images/stonewall.bmp");
 
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);

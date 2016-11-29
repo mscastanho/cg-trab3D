@@ -292,8 +292,6 @@ void drawWallArena3D(float radius, float thickness, float height, Point center, 
 	float verticalStep = height/stacks;
 	float previousX = radius;
 	float previousY = 0;
-	float previousXin = radius-thickness;
-	float previousYin = 0;
 	for(i = angleStep ; i < 360 + angleStep ; i += angleStep ){
 
 
@@ -328,40 +326,6 @@ void drawWallArena3D(float radius, float thickness, float height, Point center, 
 			glVertex3f(x,y,0);
 		glEnd();
 
-		//Draw inside faces
-		/*	v2._____.v3
-			   	|			|
-			  	._____.
-				v1      v4
-		*/
-
-	/*	float inRadius = radius - thickness;
-		float xin = inRadius*cos(M_PI*i/180.0);
-		float yin = inRadius*sin(M_PI*i/180.0);
-		glBegin(GL_TRIANGLE_STRIP);
-			//v4
-			glNormal3f(x,y,0);
-			glTexCoord2f(1,0);
-			glVertex3f(x,y,0);
-
-			//v3
-			glNormal3f(x,y,0);
-			glTexCoord2f(1,1);
-			glVertex3f(x,y,verticalStep);
-
-			//v2
-			glNormal3f(previousX,previousY,0);
-			glTexCoord2f(0,1);
-			glVertex3f(previousX,previousY,verticalStep);
-
-			//v1
-			glNormal3f(previousX,previouxY,0);
-			glTexCoord2f(0,0);
-			glVertex3f(previousX,previousY,0);
-
-
-		glEnd();
-*/
 		previousX = x;
 		previousY = y;
 

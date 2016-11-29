@@ -54,7 +54,8 @@ class Car {
 	float get_cnAngle();
 	void inc_cnAngle(float da);
 	float get_size();
-
+	float get_height();
+	
 	void draw ();
 
 	Point getBulletInitPos ();

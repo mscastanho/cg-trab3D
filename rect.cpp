@@ -10,7 +10,7 @@ using namespace std;
 Rect::Rect(float x, float y, float width, float height, Color c){
 	// Assuming x and y correspond to the lower-left vertex of the rectangle
 
-	Point v = {x,y};
+	Point v = {x,y,0.1};
 
 	this->vertex = v;
 	this->width = width;
@@ -18,9 +18,9 @@ Rect::Rect(float x, float y, float width, float height, Color c){
 	this->color = c;
 }
 
-void Rect::draw (){
+void Rect::draw (GLuint texture){
 
-	glColor3f(this->color.r,this->color.g,this->color.b);
+/*	glColor3f(this->color.r,this->color.g,this->color.b);
 
 	glBegin(GL_QUADS);
 		glVertex2f(0,0);
@@ -28,6 +28,10 @@ void Rect::draw (){
 		glVertex2f(width,height);
 		glVertex2f(0,height);
 	glEnd();
+*/
+
+	drawRect3D (this->width,this->height,vertex,texture);
+
 
 }
 
@@ -76,6 +80,36 @@ void drawRect (float width, float height, Color c, float xTrans, float yTrans){
 		glVertex2f(0,0);
 		glVertex2f(width,0);
 		glVertex2f(width,height);
+		glVertex2f(0,height);
+	glEnd();
+
+	glPopMatrix();
+}
+
+void drawRect3D (float width, float height, Point lowerLeftCorner, GLuint texture){
+	glPushMatrix();
+
+
+	glTranslatef(lowerLeftCorner.x,lowerLeftCorner.y,lowerLeftCorner.z);
+
+	glBindTexture (GL_TEXTURE_2D, texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glBegin(GL_QUADS);
+		glNormal3f(0,0,1);
+		glTexCoord2f(0,0);
+		glVertex2f(0,0);
+
+		glNormal3f(0,0,1);
+		glTexCoord2f(width/10,0);
+		glVertex2f(width,0);
+
+		glNormal3f(0,0,1);
+		glTexCoord2f(width/10,height/10);
+		glVertex2f(width,height);
+
+		glNormal3f(0,0,1);
+		glTexCoord2f(0,height/10);
 		glVertex2f(0,height);
 	glEnd();
 

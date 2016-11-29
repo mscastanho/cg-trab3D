@@ -11,6 +11,7 @@
 #include "bullet.h"
 #include <cmath>
 #include "imageloader.h"
+#include "geometry.h"
 
 using namespace std;
 
@@ -82,6 +83,8 @@ GLuint asphaltTX;
 GLuint groundTX;
 GLuint cementTX;
 GLuint stonewallTX;
+GLuint skyTX;
+GLuint finishLineTX;
 
 // Camera variables
 int toggleCam = 1;
@@ -592,30 +595,8 @@ void drawWorld(){
 	GLfloat light_position2[] = { 100, 200, 200, 1.0 };
 	glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
 
-	//arenaOut->draw();
-	//arenaIn->draw();
-	//DrawAxes(100);
-//	glMatrixMode(GL_PROJECTION);
-	//glLoadIdentity();
-
-	GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
-	GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
-	GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
-	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
-	GLfloat mat_shininess[] = { 100.0 };
-	glColor3f(0,0,1);
-
-	glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-	glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
-	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
-	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-	player->draw();
-
-	vector<Car*>::iterator it;
-	for(it = enemies.begin();it != enemies.end(); it++)
-		(*it)->draw();
-
+	// Sky
+	drawSky(500,10,skyTX);
 
 	//Arena Out
 	Point originOut = {0,0,0};
@@ -627,9 +608,23 @@ void drawWorld(){
 	float inRadius = arenaIn->get_radius();
 	drawCircle3D(inRadius,originIn,groundTX);
 
-	drawCurb3D(inRadius,1,100,originIn,1,72,cementTX);
+	// FinishLine
+	startEnd->draw(finishLineTX);
 
-	drawWallArena3D(outRadius,1,200,originOut,1,72,stonewallTX);
+	// Curb
+	//drawCurb3D(inRadius,1,20,originIn,1,72,cementTX);
+
+	float wallHeight = player->get_size();
+	drawWallArena3D(outRadius,1,wallHeight,originOut,1,72,stonewallTX);
+
+	player->draw();
+
+	vector<Car*>::iterator it;
+	for(it = enemies.begin();it != enemies.end(); it++)
+		(*it)->draw();
+
+	displayBullets();
+
 }
 
 void changeCamera(float x1, float y1, float x2, float y2){
@@ -663,11 +658,6 @@ void display(void)
 
 	glLoadIdentity();
 
-	//Câmeras estáticas para testes
-	//gluLookAt(500,500,1200,0,0,0,-1,-1,1);
-	//gluLookAt(0,600,50,0,0,50,0,0,1);
-
-
  // Desenhar visão do retrovisor
  float sizeOfCar = player->get_size()/2;
  float angleOfCar = player->get_cAngle();
@@ -700,6 +690,11 @@ void display(void)
 
 	changeCamera(0,0,windowWidth,(5.0/7.0)*windowHeight);
 
+	//Câmeras estáticas para testes
+	//gluLookAt(500,500,1200,0,0,0,-1,-1,1);
+	//gluLookAt(0,600,50,0,0,50,0,0,1);
+
+	
 	switch(toggleCam)
   {
  		 case 1:
@@ -729,6 +724,12 @@ void display(void)
   }
 
 	drawWorld();
+
+
+	printTimer();
+
+	if(gameOver)
+		printEndGameMessage();
 
 	/* Trocar buffers */
 	glutSwapBuffers();
@@ -787,11 +788,12 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	glEnable(GL_TEXTURE_2D);
 
 	//Initialize textures
-	int imgSize = 256;
 	asphaltTX = LoadTextureRAW("./images/asphalt.bmp");
 	groundTX = LoadTextureRAW("./images/ground.bmp");
 	cementTX = LoadTextureRAW("./images/cement.bmp");
 	stonewallTX = LoadTextureRAW("./images/stonewall.bmp");
+	skyTX = LoadTextureRAW("./images/sky.bmp");
+	finishLineTX = LoadTextureRAW("./images/finishline.bmp");
 
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);

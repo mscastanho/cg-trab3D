@@ -94,7 +94,7 @@ void parseCircle(XMLElement* c){
   string fill = c->Attribute("fill");
   string id = c->Attribute("id");
 
-  Point center = {cx,cy};
+  Point center = {cx,cy,10};
   Color fillColor = parseColor(fill);
 
   Circle* circle = new Circle(center,r,fillColor);

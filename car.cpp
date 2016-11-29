@@ -88,7 +88,7 @@ void Car::draw (){
 
   glPushMatrix();
 
-  glTranslatef(this->position.x,this->position.y,0);
+  glTranslatef(this->position.x,this->position.y,this->position.z);
   glRotatef(this->carAngle,0,0,1.0);
   Color color;
   float L = this->size;

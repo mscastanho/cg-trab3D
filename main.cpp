@@ -585,56 +585,7 @@ void DrawAxes(double size)
 
 }
 
-void display(void)
-{
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-
-	//glMatrixMode(GL_VIEWPORT);
-  //glViewport(0,0,windowWidth,windowHeight);
-
-	glLoadIdentity();
-
-	//Câmeras estáticas para testes
-	//gluLookAt(500,500,1200,0,0,0,-1,-1,1);
-	//gluLookAt(0,600,50,0,0,50,0,0,1);
-
- float sizeOfCar = player->get_size()/2;
- float angleOfCar = player->get_cAngle();
-
- float xCameraRotated = cos((90 + angleOfCar)*M_PI/180);
- float yCameraRotated = sin((90 + angleOfCar)*M_PI/180);
-
- Point playerPos = player->get_position();
-
- switch(toggleCam)
- {
-		 case 1:
-
-				 gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Camera at the top front
-																																																		 //of the car
-										 playerPos.x+2*sizeOfCar*xCameraRotated,playerPos.y+2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Looking down
-										 0,0,1); //Lookup pointing to z axis(ceiling)
-
-
-				 /* O carro está considerado na origem.
-					* Com isso, estamos com a posição definida
-					* Basta apenas desenhar o carro na posição correta,
-					* E nessa expressão, os eixos x e y devem ser acrescidos da posição
-					* O centro da cena foi definido arbitrariamente, talvez deva ser estudado uma nova posição
-					* No final, o z do centro da cena deve coincidir com o z da posição da camera
-					* (deixei desalinhado para poder enxergar o eixo y, olhando para baixo)
-					*/
-				 break;
-		 case 2:
-				 /* Bem parecido com o de cima, vamos implementar quando tiver o canhão */
-				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
-				 break;
-		 case 3:
-				 /* Brincar com isso hoje a noite */
-				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
-				 break;
- }
+void drawWorld(){
 
 	GLfloat light_position[] = { 200, 100, 100, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
@@ -679,6 +630,106 @@ void display(void)
 	drawCurb3D(inRadius,1,100,originIn,1,72,cementTX);
 
 	drawWallArena3D(outRadius,1,200,originOut,1,72,stonewallTX);
+}
+
+void changeCamera(float x1, float y1, float x2, float y2){
+	 // Compute aspect ratio of the new window
+	 GLfloat aspect;
+
+	 if (y2 - y1 == 0)
+	 	aspect = (GLfloat)(x2-x1) / 1; // To prevent divide by 0
+	 else
+	 	aspect = (GLfloat)(x2-x1) / ((GLfloat) y2-y1);
+
+	 // Set the viewport to cover the new window
+	 //glViewport(0, 0, width, (5.0/7.0)*height);
+
+	 glViewport(x1,y1,x2,y2);
+
+	 // Set the aspect ratio of the clipping volume to match the viewport
+	 glMatrixMode(GL_PROJECTION);  // To operate on the Projection matrix
+	 glLoadIdentity();             // Reset
+	 // Enable perspective projection with fovy, aspect, zNear and zFar
+	 gluPerspective(45.0f, aspect, 0.1f, 2000.0f);
+}
+
+void display(void)
+{
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glMatrixMode(GL_MODELVIEW);
+
+	//glMatrixMode(GL_VIEWPORT);
+  //glViewport(0,0,windowWidth,windowHeight);
+
+	glLoadIdentity();
+
+	//Câmeras estáticas para testes
+	//gluLookAt(500,500,1200,0,0,0,-1,-1,1);
+	//gluLookAt(0,600,50,0,0,50,0,0,1);
+
+
+ // Desenhar visão do retrovisor
+ float sizeOfCar = player->get_size()/2;
+ float angleOfCar = player->get_cAngle();
+
+ float xCameraRotated = cos((90 + angleOfCar)*M_PI/180);
+ float yCameraRotated = sin((90 + angleOfCar)*M_PI/180);
+
+ Point playerPos = player->get_position();
+
+ /*glViewport(0,(5.0/7.0)*windowHeight,windowWidth,windowHeight);
+ gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Camera at the top front
+																																														 //of the car
+						 playerPos.x-2*sizeOfCar*xCameraRotated,playerPos.y-2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Looking down
+						 0,0,1); //Lookup pointing to z axis(ceiling)
+
+
+  //glViewport(0, 0, windowWidth, (5.0/7.0)*windowHeight);
+*/
+
+ changeCamera(0,(5.0/7.0)*windowHeight,windowWidth,windowHeight);
+
+ gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,2*sizeOfCar*BODY_HEIGHT, //Camera at the top front
+																																													 //of the car
+					 playerPos.x-2*sizeOfCar*xCameraRotated,playerPos.y-2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT+50, //Looking down
+					 0,0,1); //Lookup pointing to z axis(ceiling)
+
+	drawWorld();
+
+	// Desenhar visão frontal
+
+	changeCamera(0,0,windowWidth,(5.0/7.0)*windowHeight);
+
+	switch(toggleCam)
+  {
+ 		 case 1:
+ 		 		 gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Camera at the top front
+ 																																																		 //of the car
+ 										 playerPos.x+2*sizeOfCar*xCameraRotated,playerPos.y+2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Looking down
+ 										 0,0,1); //Lookup pointing to z axis(ceiling)
+
+
+ 				 /* O carro está considerado na origem.
+ 					* Com isso, estamos com a posição definida
+ 					* Basta apenas desenhar o carro na posição correta,
+ 					* E nessa expressão, os eixos x e y devem ser acrescidos da posição
+ 					* O centro da cena foi definido arbitrariamente, talvez deva ser estudado uma nova posição
+ 					* No final, o z do centro da cena deve coincidir com o z da posição da camera
+ 					* (deixei desalinhado para poder enxergar o eixo y, olhando para baixo)
+ 					*/
+ 				 break;
+ 		 case 2:
+ 				 /* Bem parecido com o de cima, vamos implementar quando tiver o canhão */
+ 				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
+ 				 break;
+ 		 case 3:
+ 				 /* Brincar com isso hoje a noite */
+ 				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
+ 				 break;
+  }
+
+	drawWorld();
+
 	/* Trocar buffers */
 	glutSwapBuffers();
 	gx = gy = 0;
@@ -688,18 +739,10 @@ void display(void)
 }
 
 void reshape (GLsizei width, GLsizei height){
-	// Compute aspect ratio of the new window
-   if (height == 0) height = 1;                // To prevent divide by 0
-   GLfloat aspect = (GLfloat)width / (GLfloat)height;
 
-   // Set the viewport to cover the new window
-   glViewport(0, 0, width, height);
+	windowWidth = width;
+	windowHeight = height;
 
-   // Set the aspect ratio of the clipping volume to match the viewport
-   glMatrixMode(GL_PROJECTION);  // To operate on the Projection matrix
-   glLoadIdentity();             // Reset
-   // Enable perspective projection with fovy, aspect, zNear and zFar
-   gluPerspective(45.0f, aspect, 0.1f, 2000.0f);
 }
 
 

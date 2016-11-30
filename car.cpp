@@ -13,7 +13,7 @@
 extern float PLAYER_SPEED;
 extern float ANGLE_SPEED;
 
-Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float wAng){
+Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ, float wAng){
   this->position = pos;
   this->bodyColor = c;
   this->moving = false;
@@ -22,6 +22,7 @@ Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float wAng){
   this->size = radius/RADIUS_SIZE_RATIO;
   this->carAngle = cAng;
   this->canonAngle = cnAng;
+  this->canonAngleZ = cnAngZ;
   this->wheelAngle = wAng;
 }
 
@@ -73,6 +74,16 @@ void Car::inc_cnAngle(float da){
 
   if(this->canonAngle + da > -45 && this->canonAngle + da < 45)
 	   this->canonAngle += da;
+}
+
+float Car::get_cnAngleZ(){
+	return this->canonAngleZ;
+}
+
+void Car::inc_cnAngleZ(float da){
+
+  if(this->canonAngleZ + da >= 0 && this->canonAngleZ + da <= 45)
+	   this->canonAngleZ += da;
 }
 
 void Car::inc_position(float dx, float dy){

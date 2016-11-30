@@ -113,11 +113,11 @@ void parseCircle(XMLElement* c){
   }else if(id == "Inimigo"){
 
     //We define an enemy's initial angle later
-    Car* enemy = new Car(center,r,RED,0,0,0);
+    Car* enemy = new Car(center,r,RED,0,0,0,0);
     enemies.push_back(enemy);
 
   }else if(id == "Jogador"){
-    player = new Car(center,r,GREEN,0,0,0);
+    player = new Car(center,r,GREEN,0,0,0,0);
 
   }
 }

@@ -35,10 +35,11 @@ class Car {
 	float trajRadius; //trajectory radius for enemies` movement
 	float carAngle;
 	float canonAngle;
+	float canonAngleZ;
 	float wheelAngle;
 
   public:
-  Car(Point pos, float radius, Color c, float cAng, float cnAng, float wAng);
+  Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ, float wAng);
 
 	void setMoving(bool status);
 	Point get_position();
@@ -53,9 +54,11 @@ class Car {
 	void inc_cAngle(float da);
 	float get_cnAngle();
 	void inc_cnAngle(float da);
+	float get_cnAngleZ();
+	void inc_cnAngleZ(float da);
 	float get_size();
 	float get_height();
-	
+
 	void draw ();
 
 	Point getBulletInitPos ();

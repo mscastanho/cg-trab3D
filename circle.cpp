@@ -192,6 +192,46 @@ void drawCircle3D(float radius, Point center, GLuint texture){
 	glPopMatrix();
 }
 
+void drawArenaCeiling(float radius, Point center, GLuint texture){
+	glPushMatrix();
+	glTranslatef(center.x,center.y,center.z);
+
+	GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
+	GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
+	GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
+	GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
+	GLfloat mat_shininess[] = { 100.0 };
+	glColor3f(0,0,0);
+
+	glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+	glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+	glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
+
+	int i;
+	float x,y;
+	//glBindTexture (GL_TEXTURE_2D, texture);
+	glBegin(GL_POLYGON);
+	// Let`s use 36 vertices to draw the circle as a polygon
+	for(i = 0 ; i < 360 ; i += 4 ){
+		glNormal3f(0,0,-1); //always pointing up (z-axis)
+
+		float cossine = cos(M_PI*i/180.0);
+		float sine = sin(M_PI*i/180.0);
+
+		glTexCoord2f (cossine,sine);
+
+		x = radius*cossine;
+		y = radius*sine;
+
+		glVertex3f(x,y,0);
+	}
+	glEnd();
+
+	glPopMatrix();
+}
+
 void drawCurb3D(float radius, float thickness, float height, Point center, int stacks, int slices, GLuint texture){
 
 	glPushMatrix();

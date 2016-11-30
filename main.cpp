@@ -89,6 +89,10 @@ GLuint finishLineTX;
 
 // Camera variables
 int toggleCam = 1;
+float distCam = 5;
+float XYAngle = 0;
+float XZAngle = 45;
+bool rightButtonPressed = false;
 
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
@@ -373,20 +377,53 @@ void mouse(int botao, int estado, int x, int y){
 			Bullet* b = new Bullet(canonPosition,GREEN,playerAngle+canonAngle);
 			player_bullets.push_back(b);
 		}
+	}else if(botao == GLUT_RIGHT_BUTTON){
+		if(estado == GLUT_DOWN)
+			rightButtonPressed = true;
+		else
+			rightButtonPressed = false;
 	}
 
+	lastMouseX = x;
+	lastMouseY = y;
+
 	glutPostRedisplay();
+}
+
+void mouseMotion(int x, int y){
+	if(rightButtonPressed && toggleCam == 3){
+		float angleInc = 3;
+		if(x > lastMouseX)
+			XYAngle -= angleInc;
+		else if(x < lastMouseX)
+			XYAngle += angleInc;
+
+		if(y > lastMouseY && XZAngle >= -90+angleInc)
+			XZAngle -= angleInc;
+		else if(y < lastMouseY && XZAngle <= 90-angleInc)
+			XZAngle += angleInc;
+	}
+
+	lastMouseX = x;
+	lastMouseY = y;
 }
 
 void passiveMotion(int x, int y){
 
 	float canonAngle = player->get_cnAngle();
-	if(x > lastMouseX && canonAngle > -45+ANGLE_SPEED )
+	float canonAngleZ = player->get_cnAngleZ();
+	if(x > lastMouseX)
 		player->inc_cnAngle(-ANGLE_SPEED);
-	else if (x < lastMouseX && canonAngle < 45-ANGLE_SPEED)
+	else if (x < lastMouseX)
 		player->inc_cnAngle(ANGLE_SPEED);
 
+	if(y > lastMouseY)
+		player->inc_cnAngleZ(-ANGLE_SPEED);
+	else if (y < lastMouseY)
+		player->inc_cnAngleZ(ANGLE_SPEED);
+
 	lastMouseX = x;
+	lastMouseY = y;
 }
 
 void keyUp(unsigned char key, int x, int y)
@@ -547,47 +584,6 @@ void printTimer(){
 		}
 }
 
-void DrawAxes(double size)
-{
-    GLfloat mat_ambient_r[] = { 1.0, 0.0, 0.0, 1.0 };
-    GLfloat mat_ambient_g[] = { 0.0, 1.0, 0.0, 1.0 };
-    GLfloat mat_ambient_b[] = { 0.0, 0.0, 1.0, 1.0 };
-    GLfloat no_mat[] = { 0.0, 0.0, 0.0, 1.0 };
-    glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE,
-            no_mat);
-    glMaterialfv(GL_FRONT, GL_SPECULAR, no_mat);
-    glMaterialfv(GL_FRONT, GL_SHININESS, no_mat);
-
-    //x axis
-    glPushMatrix();
-        glMaterialfv(GL_FRONT, GL_EMISSION, mat_ambient_r);
-        glColor3fv(mat_ambient_r);
-        glScalef(size, size*0.02, size*0.02);
-        glTranslatef(0.5, 0, 0); // put in one end
-        glutSolidCube(1.0);
-    glPopMatrix();
-
-    //y axis
-    glPushMatrix();
-        glMaterialfv(GL_FRONT, GL_EMISSION, mat_ambient_g);
-        glColor3fv(mat_ambient_g);
-        glRotatef(90,0,0,1);
-        glScalef(size, size*0.02, size*0.02);
-        glTranslatef(0.5, 0, 0); // put in one end
-        glutSolidCube(1.0);
-    glPopMatrix();
-
-    //z axis
-    glPushMatrix();
-        glMaterialfv(GL_FRONT, GL_EMISSION, mat_ambient_b);
-        glColor3fv(mat_ambient_b);
-        glRotatef(-90,0,1,0);
-        glScalef(size, size*0.02, size*0.02);
-        glTranslatef(0.5, 0, 0); // put in one end
-        glutSolidCube(1.0);
-    glPopMatrix();
-
-}
 
 void drawWorld(){
 
@@ -597,7 +593,7 @@ void drawWorld(){
 	glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
 
 	// Sky
-	drawSky(500,10,skyTX);
+	//drawSky(500,10,skyTX);
 
 	//Arena Out
 	Point originOut = {0,0,0};
@@ -609,6 +605,8 @@ void drawWorld(){
 	float inRadius = arenaIn->get_radius();
 	drawCircle3D(inRadius,originIn,groundTX);
 
+
+
 	// FinishLine
 	startEnd->draw(finishLineTX);
 
@@ -617,6 +615,12 @@ void drawWorld(){
 
 	float wallHeight = player->get_size();
 	drawWallArena3D(outRadius,1,wallHeight,originOut,1,72,stonewallTX);
+
+	// Draw Ceiling
+	glDisable(GL_TEXTURE_2D);
+	Point originCeiling = {0,0,wallHeight};
+	drawArenaCeiling(outRadius,originCeiling,1);
+	glEnable(GL_TEXTURE_2D);
 
 	player->draw();
 
@@ -665,25 +669,21 @@ void display(void)
 
  float xCameraRotated = cos((90 + angleOfCar)*M_PI/180);
  float yCameraRotated = sin((90 + angleOfCar)*M_PI/180);
+ float zCameraRotated;
 
  Point playerPos = player->get_position();
 
- /*glViewport(0,(5.0/7.0)*windowHeight,windowWidth,windowHeight);
- gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Camera at the top front
-																																														 //of the car
-						 playerPos.x-2*sizeOfCar*xCameraRotated,playerPos.y-2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Looking down
-						 0,0,1); //Lookup pointing to z axis(ceiling)
-
-
-  //glViewport(0, 0, windowWidth, (5.0/7.0)*windowHeight);
-*/
-
  changeCamera(0,(5.0/7.0)*windowHeight,windowWidth,windowHeight);
 
- gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,2*sizeOfCar*BODY_HEIGHT, //Camera at the top front
-																																													 //of the car
-					 playerPos.x-2*sizeOfCar*xCameraRotated,playerPos.y-2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT+50, //Looking down
-					 0,0,1); //Lookup pointing to z axis(ceiling)
+ gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,
+	 					 playerPos.y+sizeOfCar*yCameraRotated,
+						 2*sizeOfCar*BODY_HEIGHT, //Camera at the top front of the car
+					   playerPos.x,
+						 playerPos.y,
+						 2*sizeOfCar*BODY_HEIGHT+8, //Looking down
+					   0,
+						 0,
+						 1); //Lookup pointing to z axis(ceiling)
 
 	drawWorld();
 
@@ -699,9 +699,12 @@ void display(void)
 	switch(toggleCam)
   {
  		 case 1:
- 		 		 gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,playerPos.y+sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Camera at the top front
- 																																																		 //of the car
- 										 playerPos.x+2*sizeOfCar*xCameraRotated,playerPos.y+2*sizeOfCar*yCameraRotated,sizeOfCar*BODY_HEIGHT, //Looking down
+ 		 		 gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,
+					 					 playerPos.y+sizeOfCar*yCameraRotated,
+										 sizeOfCar*BODY_HEIGHT, //Camera at the top front of the car
+ 										 playerPos.x+2*sizeOfCar*xCameraRotated,
+										 playerPos.y+2*sizeOfCar*yCameraRotated,
+										 sizeOfCar*BODY_HEIGHT, //Looking down
  										 0,0,1); //Lookup pointing to z axis(ceiling)
 
 
@@ -719,19 +722,47 @@ void display(void)
  				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
  				 break;
  		 case 3:
- 				 /* Brincar com isso hoje a noite */
- 				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
- 				 break;
+				 /* Brincar com isso hoje a noite */
+				 //x = r sinThetaXZ cosThetaXY
+				 //y = r sinThetaXZ sinThetaXY
+				 //z = r cosThetaXZ
+				 float cameraXYAngleRotated = XYAngle + player->get_cAngle();
+				 xCameraRotated = sin((XZAngle)*M_PI/180) * cos((cameraXYAngleRotated - 90)*M_PI/180);
+				 yCameraRotated = sin((XZAngle)*M_PI/180) * sin((cameraXYAngleRotated - 90)*M_PI/180);
+				 zCameraRotated = cos((XZAngle)*M_PI/180);
+
+				 if(XZAngle < 0)
+				 {
+					 gluLookAt(	playerPos.x+sizeOfCar*xCameraRotated*distCam,
+									playerPos.y+sizeOfCar*yCameraRotated*distCam,
+									playerPos.z+sizeOfCar*zCameraRotated*distCam,
+								 playerPos.x,playerPos.y,playerPos.z,
+								 cos(abs(XZAngle)*M_PI/180)*-sin((180+cameraXYAngleRotated)*M_PI/180),
+									cos(abs(XZAngle)*M_PI/180)*cos((180+cameraXYAngleRotated)*M_PI/180),
+									sin(abs(XZAngle)*M_PI/180));
+				 }
+				 else
+				 {
+					 gluLookAt(	playerPos.x+sizeOfCar*xCameraRotated*distCam,
+									playerPos.y+sizeOfCar*yCameraRotated*distCam,
+									playerPos.z+sizeOfCar*zCameraRotated*distCam,
+								 playerPos.x,playerPos.y,playerPos.z,
+								 cos(abs(XZAngle)*M_PI/180)*-sin(cameraXYAngleRotated*M_PI/180),
+									cos(abs(XZAngle)*M_PI/180)*cos(cameraXYAngleRotated*M_PI/180),
+									sin(abs(XZAngle)*M_PI/180));
+				 }
+				 break;
   }
 
 	drawWorld();
 
 
-	printTimer();
+//	printTimer();
 
-	if(gameOver)
+	/*if(gameOver)
 		printEndGameMessage();
-
+	*/
+	
 	/* Trocar buffers */
 	glutSwapBuffers();
 	gx = gy = 0;
@@ -858,6 +889,7 @@ int main (int argc, char** argv)
 				glutDisplayFunc(display);
 				glutKeyboardFunc(keyPress);
 				glutMouseFunc(mouse);
+				glutMotionFunc(mouseMotion);
 				glutKeyboardUpFunc(keyUp);
 				glutIdleFunc(idle);
 				glutPassiveMotionFunc(passiveMotion);
@@ -881,7 +913,7 @@ int main (int argc, char** argv)
 
 			    it++;
 			  }
-				
+
 				glutMainLoop();
 	}else{
 		cout << "Nome do arquivo da arena vazio. Por favor verifique o seu config.xml\n";

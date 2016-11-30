@@ -762,7 +762,7 @@ void display(void)
 	/*if(gameOver)
 		printEndGameMessage();
 	*/
-	
+
 	/* Trocar buffers */
 	glutSwapBuffers();
 	gx = gy = 0;
@@ -897,7 +897,7 @@ int main (int argc, char** argv)
 				glEnable(GL_LIGHT0);
 				glEnable(GL_LIGHT1);
 
-				map<string,Material>* materials = readMTLFile("pneu.mtl");
+				/*map<string,Material>* materials = readMTLFile("pneu.mtl");
 
 				map<string,Material>::iterator it = materials->begin();
 
@@ -912,7 +912,16 @@ int main (int argc, char** argv)
 			    cout << "filename " << m1.fileName << endl << endl;
 
 			    it++;
-			  }
+			  }*/
+
+				Object *o = readOBJFile("./objects/Pneu2.obj");
+
+				/*cout << "vertices: " << endl;
+				for(int i = 0 ; i < o->nTexels ; i++){
+					printf("u: %f v: %f ",o->texels[i].u,o->texels[i].v);
+					cout << ((o->texels[i]).m)->name << endl;
+					//cout << i << endl;
+				}*/
 
 				glutMainLoop();
 	}else{

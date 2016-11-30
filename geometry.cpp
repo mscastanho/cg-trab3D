@@ -138,5 +138,5 @@ void drawSky(float radius, float space, GLuint texture)
 
 void drawFinishLine(){
 
-  
+
 }

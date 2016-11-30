@@ -12,6 +12,7 @@
 #include <cmath>
 #include "imageloader.h"
 #include "geometry.h"
+#include "objreader.h"
 
 using namespace std;
 
@@ -694,7 +695,7 @@ void display(void)
 	//gluLookAt(500,500,1200,0,0,0,-1,-1,1);
 	//gluLookAt(0,600,50,0,0,50,0,0,1);
 
-	
+
 	switch(toggleCam)
   {
  		 case 1:
@@ -863,6 +864,24 @@ int main (int argc, char** argv)
 				glutReshapeFunc(reshape);
 				glEnable(GL_LIGHT0);
 				glEnable(GL_LIGHT1);
+
+				map<string,Material>* materials = readMTLFile("pneu.mtl");
+
+				map<string,Material>::iterator it = materials->begin();
+
+			  while(it != materials->end()){
+
+			    cout << it->first << ":" << endl;
+			    Material m1 = it->second;
+			    cout << m1.name << endl;
+			    cout << "ambient "; printPoint(m1.ambient);
+			    cout << "diffuse "; printPoint(m1.diffuse);
+			    cout << "specular "; printPoint(m1.specular);
+			    cout << "filename " << m1.fileName << endl << endl;
+
+			    it++;
+			  }
+				
 				glutMainLoop();
 	}else{
 		cout << "Nome do arquivo da arena vazio. Por favor verifique o seu config.xml\n";

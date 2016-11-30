@@ -25,6 +25,9 @@ typedef struct tPoint {
 	float z;
 } Point;
 
+
+void printPoint(Point p);
+
 // Angle must be in degrees
 Point rotateBy(Point p, float angle);
 

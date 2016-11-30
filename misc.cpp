@@ -4,6 +4,10 @@
 #include <cmath>
 #include "misc.h"
 
+void printPoint(Point p){
+  printf("x: %f, y: %f, z: %f\n",p.x,p.y,p.z);
+}
+
 // Andle must be in degrees
 Point rotateBy(Point p, float angle){
   Point rotated;

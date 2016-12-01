@@ -4,7 +4,7 @@
 # make clean: Apaga o executável e todos os arquivos objetos
 
 # Arquivos objetos que serão gerados implicitamente
-myObjects = main.o objreader.o tinyxml2.o misc.o rect.o circle.o \
+myObjects = main.o object.o tinyxml2.o misc.o rect.o circle.o \
 						bullet.o car.o input.o imageloader.o geometry.o
 
 # Flags necessárias para a compilação

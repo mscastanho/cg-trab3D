@@ -3,10 +3,11 @@
 #include <iostream>
 #include <string>
 #include <cstring>
+#include <sstream>
 #include <map>
 #include "geometry.h"
 #include "misc.h"
-#include "objreader.h"
+#include "object.h"
 
 using namespace std;
 
@@ -93,8 +94,19 @@ Object* readOBJFile (string filePath){
   int nNormals = 0;
   int ntexels = 0;
   int nFaces = 0;
+  char buffer[128];
+  char mtlFile[128];
 
   map<string,Material>* materials = NULL;
+
+  // MTL file has to have the same name as obj file
+  strcpy(mtlFile,filePath.c_str());
+  int length = strlen(mtlFile);
+  mtlFile[length-3] = 'm';
+  mtlFile[length-2] = 't';
+  mtlFile[length-1] = 'l';
+
+  materials = readMTLFile(string(mtlFile));
 
   input.open(filePath.c_str(),ifstream::in);
 
@@ -102,7 +114,7 @@ Object* readOBJFile (string filePath){
 
     // First read to get the number of items
     while( !input.eof() ){
-      char buffer[100];
+
       input.getline(buffer,100);
 
       if(strlen(buffer) == 0)
@@ -216,29 +228,16 @@ Object* readOBJFile (string filePath){
 
       }else if(!strcmp(token,"usemtl")){
           token = strtok_r(NULL," ",&savePtr1);
-        //  currentMaterial = &materials->at(string(token));
+          currentMaterial = &materials->at(string(token));
       }else if(!strcmp(token,"mtllib")){
-        token = strtok_r(NULL," ",&savePtr1);
+        /*token = strtok_r(NULL," ",&savePtr1);
         cout << "nome do arquivo: " << token << endl;
-        string file = "./" + string(token);
-        cout << file << endl;
-        materials = readMTLFile(file);
+        materials = readMTLFile(token);
 
-        cout << "tamanho: " << materials->size() << endl;;
-        map<string,Material>::iterator it = materials->begin();
+        cout << "readOBJFile: " << endl;
+        printMaterialsMap(materials);
+*/
 
-			  while(it != materials->end()){
-
-			    cout << it->first << ":" << endl;
-			    Material m1 = it->second;
-			    cout << m1.name << endl;
-			    cout << "ambient "; printPoint(m1.ambient);
-			    cout << "diffuse "; printPoint(m1.diffuse);
-			    cout << "specular "; printPoint(m1.specular);
-			    cout << "filename " << m1.fileName << endl << endl;
-
-			    it++;
-			  }
       }else if(!strcmp(token,"g")){
 
       }
@@ -248,4 +247,22 @@ Object* readOBJFile (string filePath){
   input.close();
 
   return o;
+}
+
+void printMaterialsMap(map<string,Material>* materials){
+  cout << "tamanho: " << materials->size() << endl;;
+  map<string,Material>::iterator it = materials->begin();
+
+  while(it != materials->end()){
+
+    cout << "key: " << it->first << endl;
+    Material m1 = it->second;
+    cout << m1.name << endl;
+    cout << "ambient "; printPoint(m1.ambient);
+    cout << "diffuse "; printPoint(m1.diffuse);
+    cout << "specular "; printPoint(m1.specular);
+    cout << "filename " << m1.fileName << endl << endl;
+
+    it++;
+  }
 }

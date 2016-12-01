@@ -1,5 +1,5 @@
-#ifndef OBJREADER_H_
-#define OBJREADER_H_
+#ifndef OBJECT_H_
+#define OBJECT_H_
 
 #include <string>
 #include <map>
@@ -38,10 +38,10 @@ typedef struct object {
     int nFaces;
 }Object;
 
-
-
 map<string,Material>* readMTLFile(string filePath);
 
 Object* readOBJFile (string filePath);
+
+void printMaterialsMap(map<string,Material>* materials);
 
 #endif

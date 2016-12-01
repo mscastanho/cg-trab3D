@@ -12,7 +12,7 @@
 #include <cmath>
 #include "imageloader.h"
 #include "geometry.h"
-#include "objreader.h"
+#include "object.h"
 
 using namespace std;
 
@@ -567,21 +567,9 @@ void printTimer(){
 			seconds = elapsed/1000 - minutes*60;
 		}
 
-		//Create a string to be printed
-		char *tmpStr;
 		sprintf(str, "Time: %2d:%02.2f", minutes, seconds );
-		//Define the position to start printing
-		glColor3f(0.0,0.0,0.0);
-		glRasterPos2f(windowWidth/2-15*9,windowHeight/2-20);
-		//Print  the first Char with a certain font
-		//glutBitmapLength(font,(unsigned char*)str);
-		tmpStr = str;
-		//Print each of the other Char at time
 
-		while( *tmpStr ){
-				glutBitmapCharacter(font, *tmpStr);
-				tmpStr++;
-		}
+		PrintText(0.7,0.9,str,0,1,0);
 }
 
 
@@ -757,7 +745,7 @@ void display(void)
 	drawWorld();
 
 
-//	printTimer();
+	printTimer();
 
 	/*if(gameOver)
 		printEndGameMessage();
@@ -897,24 +885,10 @@ int main (int argc, char** argv)
 				glEnable(GL_LIGHT0);
 				glEnable(GL_LIGHT1);
 
-				/*map<string,Material>* materials = readMTLFile("pneu.mtl");
+				//map<string,Material>* materials = readMTLFile("./objects/Pneu.mtl");
+				//printMaterialsMap(materials);
 
-				map<string,Material>::iterator it = materials->begin();
-
-			  while(it != materials->end()){
-
-			    cout << it->first << ":" << endl;
-			    Material m1 = it->second;
-			    cout << m1.name << endl;
-			    cout << "ambient "; printPoint(m1.ambient);
-			    cout << "diffuse "; printPoint(m1.diffuse);
-			    cout << "specular "; printPoint(m1.specular);
-			    cout << "filename " << m1.fileName << endl << endl;
-
-			    it++;
-			  }*/
-
-				Object *o = readOBJFile("./objects/Pneu2.obj");
+			//	Object *o = readOBJFile("./objects/Pneu.obj");
 
 				/*cout << "vertices: " << endl;
 				for(int i = 0 ; i < o->nTexels ; i++){

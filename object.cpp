@@ -8,6 +8,7 @@
 #include "geometry.h"
 #include "misc.h"
 #include "object.h"
+#include "imageloader.h"
 
 using namespace std;
 
@@ -68,7 +69,11 @@ map<string,Material>* readMTLFile(string filePath){
 
           if(!strcmp(token,"map_Kd")){
             token = strtok(NULL," ");
+            token[strlen(token)-1] = '\0';
             strcpy(m.fileName,token);
+
+            m.texture = LoadTextureRAW(m.fileName);
+            printf("name: %s texture: %d\n",m.fileName,m.texture);
           }
         }
 
@@ -259,23 +264,47 @@ void drawObject(Object* o){
   GLfloat mat_shininess[] = { 100.0 };
   glColor3f(0,0,1);
 
-  glDisable(GL_TEXTURE_2D);
   for (int i = 0 ; i < o->nFaces ; i++){
-    glBegin(GL_TRIANGLES);
+    Texel tg = o->texels[o->faces[i].texels[0]];
+    GLuint texture = tg.m->texture;
+
       for(int j = 0 ; j < 3 ; j++){
+
+        Texel t = o->texels[o->faces[i].texels[j]];
+        GLuint texture = t.m->texture;
+
+        glBindTexture (GL_TEXTURE_2D, texture);
+        glBegin(GL_TRIANGLES);
+
+        glTexCoord2f(t.u,t.v);
+
         Point v = o->vertices[o->faces[i].vertices[j]];
         glVertex3f(v.x,v.y,v.z);
 
         Point n = o->normals[o->faces[i].normals[j]];
   			glNormal3f(n.x,n.y,n.z);
-
-        //glTexCoord2f(o->faces[i].texels[j].u,o->faces[i].texels[j].v);
       }
-    glEnd();
+
+      glEnd();
   }
-  glEnable(GL_TEXTURE_2D);
+
 }
 
+void loadTexturesFromMaterials(map<string,Material>* materials){
+
+  map<string,Material>::iterator it = materials->begin();
+
+  while(it != materials->end()){
+
+    Material m = it->second;
+
+    if(strlen(m.fileName) != 0){
+        m.texture = LoadTextureRAW(m.fileName);
+    }
+    it++;
+  }
+
+}
 
 void printMaterialsMap(map<string,Material>* materials){
   cout << "tamanho: " << materials->size() << endl;;
@@ -289,8 +318,8 @@ void printMaterialsMap(map<string,Material>* materials){
     cout << "ambient "; printPoint(m1.ambient);
     cout << "diffuse "; printPoint(m1.diffuse);
     cout << "specular "; printPoint(m1.specular);
-    cout << "filename " << m1.fileName << endl << endl;
-
+    cout << "filename " << m1.fileName << endl;
+    cout << "index " << m1.texture << endl;
     it++;
   }
 }

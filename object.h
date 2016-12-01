@@ -12,6 +12,7 @@ typedef struct material{
   Point ambient;
   Point diffuse;
   Point specular;
+  GLuint texture;
   char fileName[32];
 }Material;
 
@@ -51,6 +52,8 @@ map<string,Material>* readMTLFile(string filePath);
 Object* readOBJFile (string filePath);
 
 void drawObject(Object* o);
+
+void loadTexturesFromMaterials(map<string,Material>* materials);
 
 void printMaterialsMap(map<string,Material>* materials);
 

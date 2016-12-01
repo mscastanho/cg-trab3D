@@ -6,7 +6,7 @@ newmtl Pneu
 Ka 0.000000 0.000000 0.000000
 Kd 0.756863 0.756863 0.756863
 Ks 0.330000 0.330000 0.330000
-map_Kd Pneu/Pneu.jpg
+map_Kd ./images/Pneu.bmp
 
 newmtl FrontColor
 Ka 0.000000 0.000000 0.000000
@@ -17,5 +17,4 @@ newmtl Textura_Pneu
 Ka 0.000000 0.000000 0.000000
 Kd 0.192157 0.192157 0.192157
 Ks 0.330000 0.330000 0.330000
-map_Kd Pneu/Textura_Pneu.jpg
-
+map_Kd ./images/Textura_Pneu.bmp

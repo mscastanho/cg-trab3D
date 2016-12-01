@@ -55,6 +55,8 @@ void RasterChars(GLfloat x, GLfloat y, GLfloat z, const char * text, double r, d
             glutBitmapCharacter(font, *tmpStr);
             tmpStr++;
         }
+        glEnable(GL_LIGHTING);
+        glEnable(GL_TEXTURE_2D);
     glPopAttrib();
 }
 

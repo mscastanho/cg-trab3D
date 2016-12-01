@@ -58,10 +58,10 @@ list<Bullet*> player_bullets;
 list<Bullet*> enemy_bullets;
 
 // Text variable
-static char str[32];
-static char str2[16];
 void * font = GLUT_BITMAP_9_BY_15;
 void * playerWonFont = GLUT_BITMAP_TIMES_ROMAN_24;
+string YOU_WON = "YOU WON!!!";
+string YOU_LOST = "YOU LOST!!!";
 
 // Says whether the game has started or not
 bool gameStarted = false;
@@ -463,25 +463,17 @@ bool checkBulletHit(list<Bullet*>* bullets, Car* car) {
 
 void printEndGameMessage(){
 
-	//Create a string to be printed
-	char *tmpStr;
+	const char *str;
+
 	if(playerWon)
-		sprintf(str2, "YOU WON!!!!");
+		str = YOU_WON.c_str();
 	else
-		sprintf(str2, "YOU LOST!!!");
+		str = YOU_LOST.c_str();
 
 	//Define the position to start printing
 	glColor3f(1.0,0.0,0.0);
-	glRasterPos2f(-5*12,-12);
-	//Print  the first Char with a certain font
-	//glutBitmapLength(font,(unsigned char*)str);
-	tmpStr = str2;
-	//Print each of the other Char at time
 
-	while( *tmpStr ){
-			glutBitmapCharacter(playerWonFont, *tmpStr);
-			tmpStr++;
-	}
+	PrintText(0.4,0.5,str,1,0,0,playerWonFont);
 
 }
 
@@ -556,7 +548,7 @@ void printTimer(){
 	static GLdouble seconds = 0;
 	GLdouble currentTime;
 	GLdouble elapsed;
-
+	char str[32];
 
 		if(gameStarted && !gameOver){
 			// Get time from the beginning of the game
@@ -569,7 +561,7 @@ void printTimer(){
 
 		sprintf(str, "Time: %2d:%02.2f", minutes, seconds );
 
-		PrintText(0.7,0.9,str,0,1,0);
+		PrintText(0.7,0.9,str,0,1,0,font);
 }
 
 
@@ -607,7 +599,7 @@ void drawWorld(){
 	// Draw Ceiling
 	glDisable(GL_TEXTURE_2D);
 	Point originCeiling = {0,0,wallHeight};
-	drawArenaCeiling(outRadius,originCeiling,1);
+	//drawArenaCeiling(outRadius,originCeiling,1);
 	glEnable(GL_TEXTURE_2D);
 
 	player->draw();
@@ -747,9 +739,9 @@ void display(void)
 
 	printTimer();
 
-	/*if(gameOver)
+	if(gameOver)
 		printEndGameMessage();
-	*/
+
 
 	/* Trocar buffers */
 	glutSwapBuffers();

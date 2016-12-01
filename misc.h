@@ -37,6 +37,6 @@ Point translateFrom(Point p, Point oldOrigin);
 
 void solidCylinder(float radius);
 
-void PrintText(GLfloat x, GLfloat y, const char * text, double r, double g, double b);
+void PrintText(GLfloat x, GLfloat y, const char * text, double r, double g, double b, void* font);
 
 #endif /* MISC_H_ */

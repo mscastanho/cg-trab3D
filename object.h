@@ -27,6 +27,13 @@ typedef struct texel{
   Material* m;
 }Texel;
 
+typedef struct vertex{
+  float x;
+  float y;
+  float z;
+  Material *m;
+}Vertex;
+
 typedef struct object {
     Point* vertices;
     Point* normals;
@@ -36,11 +43,14 @@ typedef struct object {
     int nNormals;
     int nTexels;
     int nFaces;
+    map<string,Material>* materials;
 }Object;
 
 map<string,Material>* readMTLFile(string filePath);
 
 Object* readOBJFile (string filePath);
+
+void drawObject(Object* o);
 
 void printMaterialsMap(map<string,Material>* materials);
 

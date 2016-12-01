@@ -147,6 +147,7 @@ Object* readOBJFile (string filePath){
     o->nNormals = nNormals;
     o->nTexels = ntexels;
     o->nFaces = nFaces;
+    o->materials = materials;
 
     int nVerticesRead = 0;
     int nNormalsRead = 0;
@@ -248,6 +249,33 @@ Object* readOBJFile (string filePath){
 
   return o;
 }
+
+void drawObject(Object* o){
+
+  GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
+  GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
+  GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
+  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
+  GLfloat mat_shininess[] = { 100.0 };
+  glColor3f(0,0,1);
+
+  glDisable(GL_TEXTURE_2D);
+  for (int i = 0 ; i < o->nFaces ; i++){
+    glBegin(GL_TRIANGLES);
+      for(int j = 0 ; j < 3 ; j++){
+        Point v = o->vertices[o->faces[i].vertices[j]];
+        glVertex3f(v.x,v.y,v.z);
+
+        Point n = o->normals[o->faces[i].normals[j]];
+  			glNormal3f(n.x,n.y,n.z);
+
+        //glTexCoord2f(o->faces[i].texels[j].u,o->faces[i].texels[j].v);
+      }
+    glEnd();
+  }
+  glEnable(GL_TEXTURE_2D);
+}
+
 
 void printMaterialsMap(map<string,Material>* materials){
   cout << "tamanho: " << materials->size() << endl;;

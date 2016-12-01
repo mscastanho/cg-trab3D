@@ -9,9 +9,11 @@
 #include "misc.h"
 #include "car.h"
 #include "bullet.h"
+#include "object.h"
 
 extern float PLAYER_SPEED;
 extern float ANGLE_SPEED;
+extern Object* wheelOBJ;
 
 Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ, float wAng){
   this->position = pos;
@@ -154,17 +156,17 @@ void Car::draw (){
 
   //Front Wheels
   glPushMatrix();
-  glTranslatef(bWidth/2+waWidth+wWidth/2,axisMidY+wRadius/2,0);
-  glRotatef(this->wheelAngle,0,0,1.0);
-  //drawRect(wWidth,wHeight,color,-wWidth/2,-wHeight/2);
-  solidCylinder(wRadius);
+    glTranslatef(bWidth/2+waWidth+wWidth/2,axisMidY+wRadius/2,0);
+    glRotatef(this->wheelAngle,0,0,1.0);
+    glScalef(2,2,2);
+    drawObject(wheelOBJ);
   glPopMatrix();
 
   glPushMatrix();
-  glTranslatef(-(bWidth/2+waWidth+wWidth/2),axisMidY+wRadius/2,0);
-  glRotatef(this->wheelAngle,0,0,1.0);
-  //drawRect(wWidth,wHeight,color,-wWidth/2,-wHeight/2);
-  solidCylinder(wRadius);
+    glTranslatef(-(bWidth/2+waWidth+wWidth/2),axisMidY+wRadius/2,0);
+    glRotatef(this->wheelAngle,0,0,1.0);
+    glScalef(2,2,2);
+    drawObject(wheelOBJ);
   glPopMatrix();
 /*
   glPushMatrix();
@@ -175,14 +177,16 @@ void Car::draw (){
 */
   //Back wheels
   glPushMatrix();
-  glTranslatef(-(bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
-  solidCylinder(wRadius);
+    glTranslatef(-(bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
+    glScalef(2,2,2);
+    drawObject(wheelOBJ);
   glPopMatrix();
   //drawRect(wWidth,wHeight,color,-(bWidth/2+waWidth+wWidth),-(axisMidY + wHeight/2));
 
   glPushMatrix();
-  glTranslatef((bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
-  solidCylinder(wRadius);
+    glTranslatef((bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
+    glScalef(2,2,2);
+    drawObject(wheelOBJ);
   glPopMatrix();
 //  drawRect(wWidth,wHeight,color,(bWidth/2+waWidth),-(axisMidY + wHeight/2));
   // ==============

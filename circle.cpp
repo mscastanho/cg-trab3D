@@ -214,8 +214,10 @@ void drawArenaCeiling(float radius, Point center, GLuint texture){
 	//glBindTexture (GL_TEXTURE_2D, texture);
 	glBegin(GL_POLYGON);
 	// Let`s use 36 vertices to draw the circle as a polygon
+	float lightRadius = radius*0.5;
 	for(i = 0 ; i < 360 ; i += 4 ){
 		glNormal3f(0,0,-1); //always pointing up (z-axis)
+
 
 		float cossine = cos(M_PI*i/180.0);
 		float sine = sin(M_PI*i/180.0);
@@ -228,8 +230,23 @@ void drawArenaCeiling(float radius, Point center, GLuint texture){
 		glVertex3f(x,y,0);
 	}
 	glEnd();
-
 	glPopMatrix();
+
+	for(i = 0 ; i < 360 ; i += 72 ){
+
+		float cossine = cos(M_PI*i/180.0);
+		float sine = sin(M_PI*i/180.0);
+
+		glPushMatrix();
+			glTranslatef(lightRadius*cossine,lightRadius*sine,-10);
+			glScalef(0.5,0.5,10);
+			glutSolidCube(1);
+		glPopMatrix();
+
+	}
+
+
+
 }
 
 void drawCurb3D(float radius, float thickness, float height, Point center, int stacks, int slices, GLuint texture){

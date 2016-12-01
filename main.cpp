@@ -94,6 +94,9 @@ float XYAngle = 0;
 float XZAngle = 45;
 bool rightButtonPressed = false;
 
+// Objects
+Object* wheelOBJ;
+
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
 void setNewOrigin(){
@@ -410,8 +413,6 @@ void mouseMotion(int x, int y){
 
 void passiveMotion(int x, int y){
 
-	float canonAngle = player->get_cnAngle();
-	float canonAngleZ = player->get_cnAngleZ();
 	if(x > lastMouseX)
 		player->inc_cnAngle(-ANGLE_SPEED);
 	else if (x < lastMouseX)
@@ -567,14 +568,14 @@ void printTimer(){
 
 void drawWorld(){
 
-	GLfloat light_position[] = { 200, 100, 100, 1.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	GLfloat light_position2[] = { 100, 200, 200, 1.0 };
-	glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
-
 	// Sky
-	//drawSky(500,10,skyTX);
+	drawSky(500,10,skyTX);
 
+	glPushMatrix();
+	glTranslatef(0,0,10);
+	glScalef(3,3,3);
+	drawObject(wheelOBJ);
+	glPopMatrix();
 	//Arena Out
 	Point originOut = {0,0,0};
 	float outRadius = arenaOut->get_radius();
@@ -586,20 +587,19 @@ void drawWorld(){
 	drawCircle3D(inRadius,originIn,groundTX);
 
 
-
 	// FinishLine
 	startEnd->draw(finishLineTX);
 
 	// Curb
 	//drawCurb3D(inRadius,1,20,originIn,1,72,cementTX);
 
-	float wallHeight = player->get_size();
+	float wallHeight = 3*player->get_size();
 	drawWallArena3D(outRadius,1,wallHeight,originOut,1,72,stonewallTX);
 
 	// Draw Ceiling
 	glDisable(GL_TEXTURE_2D);
 	Point originCeiling = {0,0,wallHeight};
-	//drawArenaCeiling(outRadius,originCeiling,1);
+	drawArenaCeiling(outRadius,originCeiling,1);
 	glEnable(GL_TEXTURE_2D);
 
 	player->draw();
@@ -631,6 +631,23 @@ void changeCamera(float x1, float y1, float x2, float y2){
 	 glLoadIdentity();             // Reset
 	 // Enable perspective projection with fovy, aspect, zNear and zFar
 	 gluPerspective(45.0f, aspect, 0.1f, 2000.0f);
+}
+
+void enableLights(float arenaHeight, float arenaRadius){
+	glEnable(GL_LIGHT0);
+	/*glEnable(GL_LIGHT1);
+	glEnable(GL_LIGHT2);
+	glEnable(GL_LIGHT3);
+	glEnable(GL_LIGHT4);
+	glEnable(GL_LIGHT5);
+*/
+	GLfloat light_position[] = { 200, 100, 50, 1.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glLightf(GL_LIGHT0,GL_SPOT_CUTOFF,89.0);
+
+	/*GLfloat light_position2[] = { 100, 200, 200, 1.0 };
+	glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
+*/
 }
 
 void display(void)
@@ -799,6 +816,8 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
 
+	enableLights(0,0);
+
 	//Initialize textures
 	asphaltTX = LoadTextureRAW("./images/asphalt.bmp");
 	groundTX = LoadTextureRAW("./images/ground.bmp");
@@ -806,6 +825,9 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	stonewallTX = LoadTextureRAW("./images/stonewall.bmp");
 	skyTX = LoadTextureRAW("./images/sky.bmp");
 	finishLineTX = LoadTextureRAW("./images/finishline.bmp");
+
+	//Load Objects
+	wheelOBJ = readOBJFile("./objects/Pneu.obj");
 
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
@@ -874,8 +896,6 @@ int main (int argc, char** argv)
 				glutIdleFunc(idle);
 				glutPassiveMotionFunc(passiveMotion);
 				glutReshapeFunc(reshape);
-				glEnable(GL_LIGHT0);
-				glEnable(GL_LIGHT1);
 
 				//map<string,Material>* materials = readMTLFile("./objects/Pneu.mtl");
 				//printMaterialsMap(materials);

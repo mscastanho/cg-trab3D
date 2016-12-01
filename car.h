@@ -37,6 +37,7 @@ class Car {
 	float canonAngle;
 	float canonAngleZ;
 	float wheelAngle;
+	float wheelSpinAngle;
 
   public:
   Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ, float wAng);
@@ -56,6 +57,7 @@ class Car {
 	void inc_cnAngle(float da);
 	float get_cnAngleZ();
 	void inc_cnAngleZ(float da);
+	void inc_spinAngle(float da);
 	float get_size();
 	float get_height();
 

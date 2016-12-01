@@ -26,6 +26,7 @@ Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ
   this->canonAngle = cnAng;
   this->canonAngleZ = cnAngZ;
   this->wheelAngle = wAng;
+  this->wheelSpinAngle = 0;
 }
 
 void Car::setMoving(bool status){
@@ -93,6 +94,10 @@ void Car::inc_position(float dx, float dy){
 	this->position.y += dy;
 }
 
+void Car::inc_spinAngle(float da){
+  this->wheelSpinAngle -= da;
+}
+
 float Car::get_size(){
   return this->size;
 }
@@ -158,6 +163,7 @@ void Car::draw (){
   glPushMatrix();
     glTranslatef(bWidth/2+waWidth+wWidth/2,axisMidY+wRadius/2,0);
     glRotatef(this->wheelAngle,0,0,1.0);
+    glRotatef(this->wheelSpinAngle,1.0,0,0);
     glScalef(2,2,2);
     drawObject(wheelOBJ);
   glPopMatrix();
@@ -165,6 +171,7 @@ void Car::draw (){
   glPushMatrix();
     glTranslatef(-(bWidth/2+waWidth+wWidth/2),axisMidY+wRadius/2,0);
     glRotatef(this->wheelAngle,0,0,1.0);
+    glRotatef(this->wheelSpinAngle,1.0,0,0);
     glScalef(2,2,2);
     drawObject(wheelOBJ);
   glPopMatrix();
@@ -178,6 +185,7 @@ void Car::draw (){
   //Back wheels
   glPushMatrix();
     glTranslatef(-(bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
+    glRotatef(this->wheelSpinAngle,1.0,0,0);
     glScalef(2,2,2);
     drawObject(wheelOBJ);
   glPopMatrix();
@@ -185,6 +193,7 @@ void Car::draw (){
 
   glPushMatrix();
     glTranslatef((bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
+    glRotatef(this->wheelSpinAngle,1.0,0,0);
     glScalef(2,2,2);
     drawObject(wheelOBJ);
   glPopMatrix();
@@ -410,10 +419,16 @@ Point Car::update(bool w, bool s, bool a, bool d, GLdouble timeDiff) {
 
 	}
 
+  //float dt = sqrt(dx*dx + dy*dy);
+  //float percentSpin =
+
 	if(dy == 0.0 && dy == 0.0)
 	 this->moving = false;
 	else
 	 this->moving = true;
+
+  if(this->moving)
+    this->wheelSpinAngle -= 5;
 
   Point p = {dx,dy};
 

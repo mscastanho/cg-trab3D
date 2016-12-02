@@ -96,6 +96,7 @@ bool rightButtonPressed = false;
 
 // Objects
 Object* wheelOBJ;
+Object* carOBJ;
 
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
@@ -792,12 +793,12 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	groundTX = LoadTextureRAW("./images/ground.bmp");
 	cementTX = LoadTextureRAW("./images/cement.bmp");
 	stonewallTX = LoadTextureRAW("./images/stonewall.bmp");
-	printf("name: stonwall texture: %d\n",stonewallTX);
 	skyTX = LoadTextureRAW("./images/sky.bmp");
 	finishLineTX = LoadTextureRAW("./images/finishline.bmp");
 
 	//Load Objects
 	wheelOBJ = readOBJFile("./objects/Pneu.obj");
+	carOBJ = readOBJFile("./objects/Carro.obj");
 	//loadTexturesFromMaterials(wheelOBJ->materials);
 
 	printMaterialsMap(wheelOBJ->materials);

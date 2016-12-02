@@ -14,6 +14,7 @@
 extern float PLAYER_SPEED;
 extern float ANGLE_SPEED;
 extern Object* wheelOBJ;
+extern Object* carOBJ;
 
 Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ, float wAng){
   this->position = pos;
@@ -137,8 +138,11 @@ void Car::draw (){
   float bLength = BODY_LENGTH*L;
   glColor3f(0,0,1);
   glPushMatrix();
-  glScalef(BODY_WIDTH,BODY_LENGTH,BODY_HEIGHT);
-  glutSolidCube(L);
+  //glScalef(BODY_WIDTH,BODY_LENGTH,BODY_HEIGHT);
+  //glutSolidCube(L);
+  float scaleRatio = this->radius/100;
+  glScalef(scaleRatio,scaleRatio,scaleRatio);
+  drawObject(carOBJ);
   glPopMatrix();
   // ============
 
@@ -147,12 +151,8 @@ void Car::draw (){
   color = WHITE;
   float waWidth = WHEEL_AXIS_WIDTH*L;
   float waHeight = WHEEL_AXIS_HEIGHT*L;
-/*  drawRect(waWidth,waHeight,color,bWidth/2,0.7*bHeight/2);
-  drawRect(waWidth,waHeight,color,-(bWidth/2+waWidth),0.7*bHeight/2);
-  drawRect(waWidth,waHeight,color,-(bWidth/2+waWidth),-(0.7*bHeight/2 + waHeight));
-  drawRect(waWidth,waHeight,color,bWidth/2,-(0.7*bHeight/2 + waHeight));
-  // =============
-*/
+
+/*
   // Wheels
   color = GRAY;
   float wWidth = WHEEL_WIDTH*L;
@@ -175,13 +175,7 @@ void Car::draw (){
     glScalef(2,2,2);
     drawObject(wheelOBJ);
   glPopMatrix();
-/*
-  glPushMatrix();
-  glTranslatef(-(bWidth/2+waWidth+wWidth/2),axisMidY,0);
-  glRotatef(this->wheelAngle,0,0,1.0);
-  drawRect(wWidth,wHeight,color,-wWidth/2,-wHeight/2);
-  glPopMatrix();
-*/
+
   //Back wheels
   glPushMatrix();
     glTranslatef(-(bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
@@ -199,61 +193,7 @@ void Car::draw (){
   glPopMatrix();
 //  drawRect(wWidth,wHeight,color,(bWidth/2+waWidth),-(axisMidY + wHeight/2));
   // ==============
-/*
-  // Canon (need to draw canon first to be behind the body)
-  glPushMatrix();
-  glTranslatef(0,bHeight/2,0);
-  glRotatef(this->canonAngle,0,0,1.0);
-  color = YELLOW;
-  float cWidth = CANON_WIDTH*L;
-  float cHeight = CANON_HEIGHT*L;
-  drawRect(cWidth,cHeight,color,-cWidth/2,0);
-  glPopMatrix();
-  // =============
-
-  // Windshield
-  color = BLACK;
-  float wsWidth = WINDSHIELD_WIDTH*L;
-  float wsHeight = WINDSHIELD_HEIGHT*L;
-  drawRect(wsWidth,wsHeight,color,-bWidth/2,bHeight/8);
-  // =============
-
-  // Exhaust Pipes
-  color = YELLOW;
-  float epWidth = EXHAUST_PIPE_WIDTH*L;
-  float epHeight = EXHAUST_PIPE_HEIGHT*L;
-  drawRect(epWidth,epHeight,color,-0.45*bWidth,-bHeight/2-epHeight);
-  drawRect(epWidth,epHeight,color,0.45*bWidth-epWidth,-bHeight/2-epHeight);
-  // =============
-
-  // Draw smoke if car is moving
-  static int n = 1; //represents the number of circles used to draw the smoke
-  Color smokeColors[] = {LIGHT_GRAY,GRAY,DARK_GRAY};
-  float radius = epWidth;
-  float dy = 0;
-
-  if(this->moving){
-    int i;
-    for(i = 0 ; i < n ; i++ ){
-      Point centerLeft = {-0.45*bWidth+epWidth/2,-bHeight/2-epHeight-radius - dy};
-      drawCircle(radius,centerLeft,smokeColors[i]);
-      Point centerRight = {0.45*bWidth-epWidth/2,-bHeight/2-epHeight-radius - dy};
-      drawCircle(radius,centerRight,smokeColors[i]);
-
-      dy += radius*1.5;
-      radius *= 1.2;
-    }
-
-    static GLdouble lastDrawTime = 0;
-    GLdouble now = glutGet(GLUT_ELAPSED_TIME);;
-
-    if(now - lastDrawTime > 150){
-      n = (++n)%4; // Make n vary only between 0 and 3
-      lastDrawTime = now;
-    }
-
-  }*/
-
+*/
   glPopMatrix();
 }
 

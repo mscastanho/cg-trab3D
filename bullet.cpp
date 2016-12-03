@@ -6,17 +6,18 @@
 #include "misc.h"
 #include "circle.h"
 
-Bullet::Bullet (Point position, Color color, float angle){
+Bullet::Bullet (Point position, Color color, float angleXY, float angleZ){
   this->position = position;
   this->color = color;
-  this->angle = angle;
+  this->angleXY = angleXY;
+  this->angleZ = angleZ;
 }
 
 void Bullet::draw(){
   glPushMatrix();
 
   glTranslatef(this->position.x,this->position.y,this->position.z);
-  glRotatef(angle,0,0,1.0);
+  glRotatef(angleXY,0,0,1.0);
 
 
   GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
@@ -39,9 +40,9 @@ void Bullet::draw(){
 }
 
 void Bullet::update(float speed){
-  this->position.x += -speed*sin(M_PI*this->angle/180.0);
-  this->position.y += speed*cos(M_PI*this->angle/180.0);
-  this->position.z = 20; // TODO: MUDAR ISSO DEPOIS!!!!
+  this->position.x += -speed*sin(M_PI*this->angleXY/180.0);
+  this->position.y += speed*cos(M_PI*this->angleXY/180.0);
+  //this->position.z += 20; // TODO: MUDAR ISSO DEPOIS!!!!
 }
 
 Point Bullet::get_position (){

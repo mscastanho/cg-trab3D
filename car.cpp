@@ -17,6 +17,7 @@ extern Object* wheelOBJ;
 extern Object* carOBJ;
 extern Object* lamborghiniOBJ;
 extern Object* lambWheelOBJ;
+extern Object* cannonOBJ;
 
 Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ, float wAng){
   this->position = pos;
@@ -180,8 +181,15 @@ void Car::draw (){
     glRotatef(this->wheelSpinAngle,1.0,0,0);
     drawObject(wheelOBJ);
   glPopMatrix();
-//  drawRect(wWidth,wHeight,color,(bWidth/2+waWidth),-(axisMidY + wHeight/2));
-  // ==============
+
+  // Draw cannon
+  glPushMatrix();
+    glTranslatef(0,17.5*scaleRatio,20*scaleRatio);
+    glRotatef(this->canonAngle,0,0,1.0);
+    glRotatef(this->canonAngleZ,1.0,0,0);
+    glScalef(0.5*scaleRatio,1.2*scaleRatio,0.5*scaleRatio);
+    drawObject(cannonOBJ);
+  glPopMatrix();
 
   glPopMatrix();
 }

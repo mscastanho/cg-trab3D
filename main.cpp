@@ -97,6 +97,7 @@ bool rightButtonPressed = false;
 // Objects
 Object* wheelOBJ;
 Object* carOBJ;
+Object* cannonOBJ;
 
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
@@ -183,7 +184,8 @@ void controlEnemyShots(){
 				Point canonPosition = (*it)->getBulletInitPos();
 				float playerAngle = (*it)->get_cAngle();
 				float canonAngle = (*it)->get_cnAngle();
-				Bullet* b = new Bullet(canonPosition,RED,playerAngle+canonAngle);
+				float canonAngleZ = (*it)->get_cnAngleZ();
+				Bullet* b = new Bullet(canonPosition,RED,playerAngle+canonAngle,canonAngleZ);
 				enemy_bullets.push_back(b);
 			}
 		}
@@ -378,7 +380,8 @@ void mouse(int botao, int estado, int x, int y){
 			Point canonPosition = player->getBulletInitPos();
 			float playerAngle = player->get_cAngle();
 			float canonAngle = player->get_cnAngle();
-			Bullet* b = new Bullet(canonPosition,GREEN,playerAngle+canonAngle);
+			float canonAngleZ = player->get_cnAngleZ();
+			Bullet* b = new Bullet(canonPosition,GREEN,playerAngle+canonAngle,canonAngleZ);
 			player_bullets.push_back(b);
 		}
 	}else if(botao == GLUT_RIGHT_BUTTON){
@@ -790,6 +793,7 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	//Load Objects
 	wheelOBJ = readOBJFile("./objects/Pneu.obj");
 	carOBJ = readOBJFile("./objects/Ferrari.obj");
+	cannonOBJ = readOBJFile("./objects/Cannon.obj");
 	//loadTexturesFromMaterials(wheelOBJ->materials);
 
 	printMaterialsMap(wheelOBJ->materials);

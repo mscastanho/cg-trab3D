@@ -12,10 +12,11 @@ class Bullet {
 
   Point position;
   Color color;
-  float angle;
+  float angleXY;
+  float angleZ;
 
   public:
-  Bullet (Point position, Color color, float angle);
+  Bullet (Point position, Color color, float angle, float angleZ);
   void draw();
   void update(float speed);
   Point get_position ();

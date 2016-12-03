@@ -390,9 +390,12 @@ Point Car::update(bool w, bool s, bool a, bool d, GLdouble timeDiff) {
 	else
 	 this->moving = true;
 
-  if(this->moving)
-    this->wheelSpinAngle -= 5;
-
+  if(this->moving){
+    if(w)
+      this->wheelSpinAngle -= 5*playerSpeed;
+    if(s)
+      this->wheelSpinAngle += 5*playerSpeed;
+  }
   Point p = {dx,dy};
 
   return p;

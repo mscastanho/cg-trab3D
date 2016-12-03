@@ -605,7 +605,7 @@ void drawWorld(){
 	// Curb
 	//drawCurb3D(inRadius,1,20,originIn,1,72,cementTX);
 
-	float wallHeight = 3*player->get_size();
+	float wallHeight = 4*player->get_height();
 	drawWallArena3D(outRadius,1,wallHeight,originOut,1,72,stonewallTX);
 
 	// Draw Ceiling
@@ -686,7 +686,7 @@ void display(void)
 
  gluLookAt(  playerPos.x+sizeOfCar*xCameraRotated,
 	 					 playerPos.y+sizeOfCar*yCameraRotated,
-						 2*sizeOfCar*BODY_HEIGHT, //Camera at the top front of the car
+						 2*sizeOfCar*BODY_HEIGHT, // at the top front of the car
 					   playerPos.x,
 						 playerPos.y,
 						 2*sizeOfCar*BODY_HEIGHT+8, //Looking down

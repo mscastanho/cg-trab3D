@@ -107,7 +107,8 @@ float Car::get_size(){
 }
 
 float Car::get_height(){
-  return this->size*(BODY_HEIGHT);
+  float scaleRatio = this->radius/100;
+  return scaleRatio*35;
 }
 
 void Car::draw (bool useComplexModel){
@@ -119,6 +120,7 @@ void Car::draw (bool useComplexModel){
   glRotatef(this->carAngle,0,0,1.0);
 
   float L = this->size;
+  float scaleRatio = this->radius/100;
 
   if(useComplexModel){
     Color color;
@@ -133,7 +135,6 @@ void Car::draw (bool useComplexModel){
     glPushMatrix();
     //glScalef(BODY_WIDTH,BODY_LENGTH,BODY_HEIGHT);
     //glutSolidCube(L);
-    float scaleRatio = this->radius/100;
     glScalef(scaleRatio,scaleRatio,scaleRatio);
     drawObject(carOBJ);
     //drawObject(lamborghiniOBJ);
@@ -197,6 +198,14 @@ void Car::draw (bool useComplexModel){
   }else{
     glScalef(0.4,1.0,0.4);
     glutSolidCube(L);
+    // Draw cannon
+    glPushMatrix();
+      glTranslatef(0,0.5*L,0.4*L);
+      glRotatef(this->canonAngle,0,0,1.0);
+      glRotatef(this->canonAngleZ,1.0,0,0);
+      glScalef(0.5*scaleRatio,1.2*scaleRatio,0.5*scaleRatio);
+      drawObject(cannonOBJ);
+    glPopMatrix();
   }
 
   glPopMatrix();

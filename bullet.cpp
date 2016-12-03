@@ -40,9 +40,15 @@ void Bullet::draw(){
 }
 
 void Bullet::update(float speed){
+
+  float x = this->position.x;
+  float y = this->position.y;
+
+  float r = sqrt(x*x + y*y);
   this->position.x += -speed*sin(M_PI*this->angleXY/180.0);
   this->position.y += speed*cos(M_PI*this->angleXY/180.0);
-  //this->position.z += 20; // TODO: MUDAR ISSO DEPOIS!!!!
+
+  //this->position.z += speed*r/tan(M_PI*this->angleZ/180.0);
 }
 
 Point Bullet::get_position (){

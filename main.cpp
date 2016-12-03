@@ -798,7 +798,7 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 
 	//Load Objects
 	wheelOBJ = readOBJFile("./objects/Pneu.obj");
-	carOBJ = readOBJFile("./objects/Carro.obj");
+	carOBJ = readOBJFile("./objects/Ferrari.obj");
 	//loadTexturesFromMaterials(wheelOBJ->materials);
 
 	printMaterialsMap(wheelOBJ->materials);

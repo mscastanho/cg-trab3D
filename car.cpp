@@ -15,6 +15,8 @@ extern float PLAYER_SPEED;
 extern float ANGLE_SPEED;
 extern Object* wheelOBJ;
 extern Object* carOBJ;
+extern Object* lamborghiniOBJ;
+extern Object* lambWheelOBJ;
 
 Car::Car(Point pos, float radius, Color c, float cAng, float cnAng, float cnAngZ, float wAng){
   this->position = pos;
@@ -111,22 +113,8 @@ void Car::draw (){
 
   glPushMatrix();
 
-  glTranslatef(this->position.x,this->position.y,this->position.z);
+  glTranslatef(this->position.x,this->position.y,0.5);
   glRotatef(this->carAngle,0,0,1.0);
-
-  GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
-  GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
-  GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
-  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
-  GLfloat mat_shininess[] = { 100.0 };
-  glColor3f(0,0,1);
-
-  glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
-  glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
-  glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
-  glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
-  glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
-
 
   Color color;
   float L = this->size;
@@ -143,6 +131,7 @@ void Car::draw (){
   float scaleRatio = this->radius/100;
   glScalef(scaleRatio,scaleRatio,scaleRatio);
   drawObject(carOBJ);
+  //drawObject(lamborghiniOBJ);
   glPopMatrix();
   // ============
 
@@ -152,7 +141,7 @@ void Car::draw (){
   float waWidth = WHEEL_AXIS_WIDTH*L;
   float waHeight = WHEEL_AXIS_HEIGHT*L;
 
-/*
+
   // Wheels
   color = GRAY;
   float wWidth = WHEEL_WIDTH*L;
@@ -161,39 +150,39 @@ void Car::draw (){
 
   //Front Wheels
   glPushMatrix();
-    glTranslatef(bWidth/2+waWidth+wWidth/2,axisMidY+wRadius/2,0);
+    glTranslatef(-34.14*scaleRatio,17.5*scaleRatio,7.5*scaleRatio);
     glRotatef(this->wheelAngle,0,0,1.0);
     glRotatef(this->wheelSpinAngle,1.0,0,0);
-    glScalef(2,2,2);
+    glScalef(0.75,0.75,0.75);
     drawObject(wheelOBJ);
   glPopMatrix();
 
   glPushMatrix();
-    glTranslatef(-(bWidth/2+waWidth+wWidth/2),axisMidY+wRadius/2,0);
+    glTranslatef(34.14*scaleRatio,17.5*scaleRatio,7.5*scaleRatio);
     glRotatef(this->wheelAngle,0,0,1.0);
     glRotatef(this->wheelSpinAngle,1.0,0,0);
-    glScalef(2,2,2);
+    glScalef(0.750,0.75,0.75);
     drawObject(wheelOBJ);
   glPopMatrix();
 
   //Back wheels
   glPushMatrix();
-    glTranslatef(-(bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
-    glRotatef(this->wheelSpinAngle,1.0,0,0);
-    glScalef(2,2,2);
-    drawObject(wheelOBJ);
+  glTranslatef(33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
+  glRotatef(this->wheelAngle,0,0,1.0);
+  glRotatef(this->wheelSpinAngle,1.0,0,0);
+  drawObject(wheelOBJ);
   glPopMatrix();
   //drawRect(wWidth,wHeight,color,-(bWidth/2+waWidth+wWidth),-(axisMidY + wHeight/2));
 
   glPushMatrix();
-    glTranslatef((bWidth/2+waWidth+wWidth/2),-(axisMidY + wRadius/2),0);
+    glTranslatef(-33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
+    glRotatef(this->wheelAngle,0,0,1.0);
     glRotatef(this->wheelSpinAngle,1.0,0,0);
-    glScalef(2,2,2);
     drawObject(wheelOBJ);
   glPopMatrix();
 //  drawRect(wWidth,wHeight,color,(bWidth/2+waWidth),-(axisMidY + wHeight/2));
   // ==============
-*/
+
   glPopMatrix();
 }
 

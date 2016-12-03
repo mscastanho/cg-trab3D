@@ -11,13 +11,13 @@ newmtl Mirror_01
 Ka 0.000000 0.000000 0.000000
 Kd 0.725490 0.725490 0.725490
 Ks 0.330000 0.330000 0.330000
-map_Kd Ferrari/Mirror_01.jpg
+map_Kd ./images/Mirror_01.bmp
 
 newmtl Ferrari
 Ka 0.000000 0.000000 0.000000
 Kd 0.611765 0.196078 0.094118
 Ks 0.330000 0.330000 0.330000
-map_Kd Ferrari/Ferrari.bmp
+map_Kd ./images/Ferrari.bmp
 
 newmtl FrontColor
 Ka 0.000000 0.000000 0.000000
@@ -28,4 +28,3 @@ newmtl Color_M09
 Ka 0.000000 0.000000 0.000000
 Kd 0.000000 0.000000 0.000000
 Ks 0.330000 0.330000 0.330000
-

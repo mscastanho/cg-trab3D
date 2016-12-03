@@ -71,7 +71,7 @@ map<string,Material>* readMTLFile(string filePath){
             token = strtok(NULL," ");
             token[strlen(token)-1] = '\0';
             strcpy(m.fileName,token);
-
+            cout << "FILENAME in readMTLFile: " << m.fileName << endl;
             m.texture = LoadTextureRAW(m.fileName);
             printf("name: %s texture: %d\n",m.fileName,m.texture);
           }
@@ -257,13 +257,6 @@ Object* readOBJFile (string filePath){
 
 void drawObject(Object* o){
 
-  GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
-  GLfloat materialColorA[] = { 0.2, 0.2, 0.2, 1};
-  GLfloat materialColorD[] = { 1.0, 1.0, 1.0, 1};
-  GLfloat mat_specular[] = { 1.0, 1.0, 1.0, 1};
-  GLfloat mat_shininess[] = { 100.0 };
-  glColor3f(0,0,1);
-
   for (int i = 0 ; i < o->nFaces ; i++){
     Texel tg = o->texels[o->faces[i].texels[0]];
     GLuint texture = tg.m->texture;
@@ -272,6 +265,31 @@ void drawObject(Object* o){
 
         Texel t = o->texels[o->faces[i].texels[j]];
         GLuint texture = t.m->texture;
+
+        GLfloat materialEmission[] = { 0.10, 0.10, 0.10, 1};
+        GLfloat materialColorA[] = { t.m->ambient.x,
+                                     t.m->ambient.y,
+                                     t.m->ambient.z,
+                                     1};
+
+        GLfloat materialColorD[] = { t.m->diffuse.x,
+                                     t.m->diffuse.y,
+                                     t.m->diffuse.z,
+                                     1};
+
+        GLfloat mat_specular[] = { t.m->specular.x,
+                                   t.m->specular.y,
+                                   t.m->specular.z,
+                                   1};
+
+        GLfloat mat_shininess[] = { 100.0 };
+        glColor3f(1,1,1);
+
+        glMaterialfv(GL_FRONT, GL_EMISSION, materialEmission);
+        glMaterialfv(GL_FRONT, GL_AMBIENT, materialColorA);
+        glMaterialfv(GL_FRONT, GL_DIFFUSE, materialColorD);
+        glMaterialfv(GL_FRONT, GL_SPECULAR, mat_specular);
+        glMaterialfv(GL_FRONT, GL_SHININESS, mat_shininess);
 
         glBindTexture (GL_TEXTURE_2D, texture);
         glBegin(GL_TRIANGLES);

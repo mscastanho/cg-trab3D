@@ -61,7 +61,7 @@ class Car {
 	float get_size();
 	float get_height();
 
-	void draw ();
+	void draw (bool useComplexModel);
 
 	Point getBulletInitPos ();
 

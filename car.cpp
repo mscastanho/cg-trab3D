@@ -110,86 +110,94 @@ float Car::get_height(){
   return this->size*(BODY_HEIGHT);
 }
 
-void Car::draw (){
+void Car::draw (bool useComplexModel){
 
   glPushMatrix();
+
 
   glTranslatef(this->position.x,this->position.y,0.5);
   glRotatef(this->carAngle,0,0,1.0);
 
-  Color color;
   float L = this->size;
 
-  // Main body properties
-
-  float bHeight = BODY_HEIGHT*L;
-  float bWidth = BODY_WIDTH*L;
-  float bLength = BODY_LENGTH*L;
-  glColor3f(0,0,1);
-  glPushMatrix();
-  //glScalef(BODY_WIDTH,BODY_LENGTH,BODY_HEIGHT);
-  //glutSolidCube(L);
-  float scaleRatio = this->radius/100;
-  glScalef(scaleRatio,scaleRatio,scaleRatio);
-  drawObject(carOBJ);
-  //drawObject(lamborghiniOBJ);
-  glPopMatrix();
-  // ============
+  if(useComplexModel){
+    Color color;
 
 
-  // Wheel axes
-  color = WHITE;
-  float waWidth = WHEEL_AXIS_WIDTH*L;
-  float waHeight = WHEEL_AXIS_HEIGHT*L;
+    // Main body properties
+
+    float bHeight = BODY_HEIGHT*L;
+    float bWidth = BODY_WIDTH*L;
+    float bLength = BODY_LENGTH*L;
+    glColor3f(0,0,1);
+    glPushMatrix();
+    //glScalef(BODY_WIDTH,BODY_LENGTH,BODY_HEIGHT);
+    //glutSolidCube(L);
+    float scaleRatio = this->radius/100;
+    glScalef(scaleRatio,scaleRatio,scaleRatio);
+    drawObject(carOBJ);
+    //drawObject(lamborghiniOBJ);
+    glPopMatrix();
+    // ============
 
 
-  // Wheels
-  color = GRAY;
-  float wWidth = WHEEL_WIDTH*L;
-  float wRadius = WHEEL_RADIUS*L;
-  float axisMidY = 0.7*bHeight/2 + waHeight/2;
+    // Wheel axes
+    color = WHITE;
+    float waWidth = WHEEL_AXIS_WIDTH*L;
+    float waHeight = WHEEL_AXIS_HEIGHT*L;
 
-  //Front Wheels
-  glPushMatrix();
-    glTranslatef(-34.14*scaleRatio,17.5*scaleRatio,7.5*scaleRatio);
-    glRotatef(this->wheelAngle,0,0,1.0);
-    glRotatef(this->wheelSpinAngle,1.0,0,0);
-    glScalef(0.75,0.75,0.75);
-    drawObject(wheelOBJ);
-  glPopMatrix();
 
-  glPushMatrix();
-    glTranslatef(34.14*scaleRatio,17.5*scaleRatio,7.5*scaleRatio);
-    glRotatef(this->wheelAngle,0,0,1.0);
-    glRotatef(this->wheelSpinAngle,1.0,0,0);
-    glScalef(0.750,0.75,0.75);
-    drawObject(wheelOBJ);
-  glPopMatrix();
+    // Wheels
+    color = GRAY;
+    float wWidth = WHEEL_WIDTH*L;
+    float wRadius = WHEEL_RADIUS*L;
+    float axisMidY = 0.7*bHeight/2 + waHeight/2;
 
-  //Back wheels
-  glPushMatrix();
-  glTranslatef(33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
-  glRotatef(this->wheelAngle,0,0,1.0);
-  glRotatef(this->wheelSpinAngle,1.0,0,0);
-  drawObject(wheelOBJ);
-  glPopMatrix();
-  //drawRect(wWidth,wHeight,color,-(bWidth/2+waWidth+wWidth),-(axisMidY + wHeight/2));
+    //Front Wheels
+    glPushMatrix();
+      glTranslatef(-34.14*scaleRatio,17.5*scaleRatio,7.5*scaleRatio);
+      glRotatef(this->wheelAngle,0,0,1.0);
+      glRotatef(this->wheelSpinAngle,1.0,0,0);
+      glScalef(0.75,0.75,0.75);
+      drawObject(wheelOBJ);
+    glPopMatrix();
 
-  glPushMatrix();
-    glTranslatef(-33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
+    glPushMatrix();
+      glTranslatef(34.14*scaleRatio,17.5*scaleRatio,7.5*scaleRatio);
+      glRotatef(this->wheelAngle,0,0,1.0);
+      glRotatef(this->wheelSpinAngle,1.0,0,0);
+      glScalef(0.750,0.75,0.75);
+      drawObject(wheelOBJ);
+    glPopMatrix();
+
+    //Back wheels
+    glPushMatrix();
+    glTranslatef(33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
     glRotatef(this->wheelAngle,0,0,1.0);
     glRotatef(this->wheelSpinAngle,1.0,0,0);
     drawObject(wheelOBJ);
-  glPopMatrix();
+    glPopMatrix();
+    //drawRect(wWidth,wHeight,color,-(bWidth/2+waWidth+wWidth),-(axisMidY + wHeight/2));
 
-  // Draw cannon
-  glPushMatrix();
-    glTranslatef(0,17.5*scaleRatio,20*scaleRatio);
-    glRotatef(this->canonAngle,0,0,1.0);
-    glRotatef(this->canonAngleZ,1.0,0,0);
-    glScalef(0.5*scaleRatio,1.2*scaleRatio,0.5*scaleRatio);
-    drawObject(cannonOBJ);
-  glPopMatrix();
+    glPushMatrix();
+      glTranslatef(-33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
+      glRotatef(this->wheelAngle,0,0,1.0);
+      glRotatef(this->wheelSpinAngle,1.0,0,0);
+      drawObject(wheelOBJ);
+    glPopMatrix();
+
+    // Draw cannon
+    glPushMatrix();
+      glTranslatef(0,17.5*scaleRatio,20*scaleRatio);
+      glRotatef(this->canonAngle,0,0,1.0);
+      glRotatef(this->canonAngleZ,1.0,0,0);
+      glScalef(0.5*scaleRatio,1.2*scaleRatio,0.5*scaleRatio);
+      drawObject(cannonOBJ);
+    glPopMatrix();
+  }else{
+    glScalef(0.4,1.0,0.4);
+    glutSolidCube(L);
+  }
 
   glPopMatrix();
 }

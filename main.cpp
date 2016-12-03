@@ -99,6 +99,9 @@ Object* wheelOBJ;
 Object* carOBJ;
 Object* cannonOBJ;
 
+// Use complex car model or not
+bool useComplexModel = true;
+
 // This function calculates the deltas to adjust all coordinates so the center
 // of the arena is the new origin
 void setNewOrigin(){
@@ -498,7 +501,7 @@ void idle (void)
 	pgy = gy;
 
 	float wheelAngle = player->get_wAngle();
-	bool wPressed, sPressed, aPressed, dPressed;
+	bool wPressed, sPressed, aPressed, dPressed, mPressed, nPressed;
 
 	dPressed = (keyStatus['D'] == 1 || keyStatus['d'] == 1) && wheelAngle > -45+ANGLE_SPEED;
 
@@ -507,6 +510,16 @@ void idle (void)
 	wPressed = keyStatus['W'] == 1 || keyStatus['w'] == 1;
 
 	sPressed = keyStatus['S'] == 1 || keyStatus['s'] == 1;
+
+	mPressed = keyStatus['M'] == 1 || keyStatus['m'] == 1;
+
+	nPressed = keyStatus['N'] == 1 || keyStatus['n'] == 1;
+
+	if(mPressed)
+		useComplexModel = true;
+
+	if(nPressed)
+		useComplexModel = false;
 
 	// Check game start
 	if(!gameStarted && wPressed){
@@ -601,11 +614,11 @@ void drawWorld(){
 	drawArenaCeiling(outRadius,originCeiling,1);
 	glEnable(GL_TEXTURE_2D);
 
-	player->draw();
+	player->draw(useComplexModel);
 
 	vector<Car*>::iterator it;
 	for(it = enemies.begin();it != enemies.end(); it++)
-		(*it)->draw();
+		(*it)->draw(useComplexModel);
 
 	displayBullets();
 
@@ -796,8 +809,6 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	cannonOBJ = readOBJFile("./objects/Cannon.obj");
 	//loadTexturesFromMaterials(wheelOBJ->materials);
 
-	printMaterialsMap(wheelOBJ->materials);
-
 	glClearDepth(1.0f);
 	glDepthFunc(GL_LEQUAL);
 
@@ -846,8 +857,8 @@ int main (int argc, char** argv)
 				// Definindo o titulo da janela
 				glutCreateWindow("Arena");
 
-				//Fundo branco
-				Color bgColor = {1.0,1.0,1.0};
+				//Fundo azul claro
+				Color bgColor = {135,206,250};
 
 				// Points to define the ortho
 				float xlim1 = -arenaOut->get_radius();

@@ -71,9 +71,7 @@ map<string,Material>* readMTLFile(string filePath){
             token = strtok(NULL," ");
             token[strlen(token)-1] = '\0';
             strcpy(m.fileName,token);
-            cout << "FILENAME in readMTLFile: " << m.fileName << endl;
             m.texture = LoadTextureRAW(m.fileName);
-            printf("name: %s texture: %d\n",m.fileName,m.texture);
           }
         }
 

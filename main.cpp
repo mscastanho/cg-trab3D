@@ -402,7 +402,7 @@ void mouseMotion(int x, int y){
 		else if(x < lastMouseX)
 			XYAngle += angleInc;
 
-		if(y > lastMouseY && XZAngle >= -90+angleInc)
+		if(y > lastMouseY && XZAngle >= 2+angleInc)
 			XZAngle -= angleInc;
 		else if(y < lastMouseY && XZAngle <= 90-angleInc)
 			XZAngle += angleInc;
@@ -699,21 +699,25 @@ void display(void)
 										 playerPos.y+2*sizeOfCar*yCameraRotated,
 										 sizeOfCar*BODY_HEIGHT, //Looking down
  										 0,0,1); //Lookup pointing to z axis(ceiling)
-
-
- 				 /* O carro está considerado na origem.
- 					* Com isso, estamos com a posição definida
- 					* Basta apenas desenhar o carro na posição correta,
- 					* E nessa expressão, os eixos x e y devem ser acrescidos da posição
- 					* O centro da cena foi definido arbitrariamente, talvez deva ser estudado uma nova posição
- 					* No final, o z do centro da cena deve coincidir com o z da posição da camera
- 					* (deixei desalinhado para poder enxergar o eixo y, olhando para baixo)
- 					*/
  				 break;
  		 case 2:
+		 {
+				Point canonPosition = player->getBulletInitPos();
+
+				float carAngle = player->get_cAngle();
+				float cannonAngle = player->get_cnAngle();
+				float cannonAngleZ = player->get_cnAngleZ();
+
  				 /* Bem parecido com o de cima, vamos implementar quando tiver o canhão */
- 				 gluLookAt(0,200,200, 0,0,0, 0,0,1);
+ 				 gluLookAt(canonPosition.x,canonPosition.y,canonPosition.z,
+							canonPosition.x + (canonPosition.x - playerPos.x+sizeOfCar*xCameraRotated),
+					 		canonPosition.y + (canonPosition.y - playerPos.y+sizeOfCar*yCameraRotated),
+							canonPosition.z + (canonPosition.z - 10), //Camera at the top front of the car
+							cos(cannonAngleZ*M_PI/180)*-sin((cannonAngleZ+carAngle)*M_PI/180),
+							cos(cannonAngleZ*M_PI/180)*cos((cannonAngleZ+carAngle)*M_PI/180),
+							sin(cannonAngleZ*M_PI/180));
  				 break;
+		 }
  		 case 3:
 				 /* Brincar com isso hoje a noite */
 				 //x = r sinThetaXZ cosThetaXY
@@ -724,26 +728,13 @@ void display(void)
 				 yCameraRotated = sin((XZAngle)*M_PI/180) * sin((cameraXYAngleRotated - 90)*M_PI/180);
 				 zCameraRotated = cos((XZAngle)*M_PI/180);
 
-				 if(XZAngle < 0)
-				 {
-					 gluLookAt(	playerPos.x+sizeOfCar*xCameraRotated*distCam,
-									playerPos.y+sizeOfCar*yCameraRotated*distCam,
-									playerPos.z+sizeOfCar*zCameraRotated*distCam,
-								 playerPos.x,playerPos.y,playerPos.z,
-								 cos(abs(XZAngle)*M_PI/180)*-sin((180+cameraXYAngleRotated)*M_PI/180),
-									cos(abs(XZAngle)*M_PI/180)*cos((180+cameraXYAngleRotated)*M_PI/180),
-									sin(abs(XZAngle)*M_PI/180));
-				 }
-				 else
-				 {
-					 gluLookAt(	playerPos.x+sizeOfCar*xCameraRotated*distCam,
-									playerPos.y+sizeOfCar*yCameraRotated*distCam,
-									playerPos.z+sizeOfCar*zCameraRotated*distCam,
-								 playerPos.x,playerPos.y,playerPos.z,
-								 cos(abs(XZAngle)*M_PI/180)*-sin(cameraXYAngleRotated*M_PI/180),
-									cos(abs(XZAngle)*M_PI/180)*cos(cameraXYAngleRotated*M_PI/180),
-									sin(abs(XZAngle)*M_PI/180));
-				 }
+				 gluLookAt(	playerPos.x+sizeOfCar*xCameraRotated*distCam,
+								playerPos.y+sizeOfCar*yCameraRotated*distCam,
+								playerPos.z+sizeOfCar*zCameraRotated*distCam,
+							 playerPos.x,playerPos.y,playerPos.z,
+							 cos(abs(XZAngle)*M_PI/180)*-sin(cameraXYAngleRotated*M_PI/180),
+								cos(abs(XZAngle)*M_PI/180)*cos(cameraXYAngleRotated*M_PI/180),
+								sin(abs(XZAngle)*M_PI/180));
 				 break;
   }
 

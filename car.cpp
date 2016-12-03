@@ -189,7 +189,21 @@ void Car::draw (){
 // This function returns the coordinates of a bullet leaving the canon
 Point Car::getBulletInitPos (){
 
-  Point pCanon = {0,0};
+  Point pCanon = {0,0,0};
+
+  Point pCanonAux = {0,0,0};
+
+  pCanon.z = 10 + 10*sin((canonAngleZ*M_PI)/180); //MUDAR
+
+  // Get new X and Y position with cannon Z angle
+  float XYAngleRotated = canonAngle + carAngle;
+  float xRotated = - cos((canonAngleZ)*M_PI/180) * cos((XYAngleRotated - 90)*M_PI/180);
+  float yRotated = - cos((canonAngleZ)*M_PI/180) * sin((XYAngleRotated - 90)*M_PI/180);
+  float zRotated = 1 + sin((canonAngleZ)*M_PI/180);
+
+  // The difference between new and old position is calculated
+  pCanonAux.x = CANON_HEIGHT*this->size*xRotated - CANON_HEIGHT*this->size*sin((180+XYAngleRotated)*M_PI/180);
+  pCanonAux.y = CANON_HEIGHT*this->size*yRotated - CANON_HEIGHT*this->size*sin((90+XYAngleRotated)*M_PI/180);
 
   // Translate from the canon's end position
   Point canonEndPos = {0,CANON_HEIGHT*this->size};
@@ -207,6 +221,10 @@ Point Car::getBulletInitPos (){
 
   // First translate from car position
   pCanon = translateFrom(pCanon,this->position);
+
+  // Adds the difference between X and Y position
+  pCanon.x += pCanonAux.x;
+  pCanon.y += pCanonAux.y;
 
   return pCanon;
 }

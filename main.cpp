@@ -89,10 +89,13 @@ GLuint finishLineTX;
 
 // Camera variables
 int toggleCam = 1;
-float distCam = 5;
+float distCam = 3;
 float XYAngle = 0;
 float XZAngle = 45;
 bool rightButtonPressed = false;
+
+// Lighting variables
+bool noturnMode = false;
 
 // Objects
 Object* wheelOBJ;
@@ -255,9 +258,10 @@ void updateEnemies(GLdouble timeDiff){
 
 		if(collisionPlayer || collisionArena || collisionEnemies)
 			(*it)->inc_position(-dx,-dy);
-		else
+		else{
 			(*it)->set_cAngle(oldcAngle+enemySpeed*180/(R*M_PI));
-
+			(*it)->inc_spinAngle(-5*enemySpeed);
+		}
 		// Change canon angle randomly
 		srand((unsigned int) seedMag);
 		int ang = rand();
@@ -453,6 +457,8 @@ void keyPress(unsigned char key, int x, int y)
       case '3':
           toggleCam = 3;
           break;
+	  case 'i':
+		  noturnMode = not(noturnMode);
       default:
           keyStatus[key] = 1;
   }
@@ -605,7 +611,7 @@ void drawWorld(){
 	// Curb
 	//drawCurb3D(inRadius,1,20,originIn,1,72,cementTX);
 
-	float wallHeight = 4*player->get_height();
+	float wallHeight = 8*player->get_height();
 	drawWallArena3D(outRadius,1,wallHeight,originOut,1,72,stonewallTX);
 
 	// Draw Ceiling
@@ -646,16 +652,58 @@ void changeCamera(float x1, float y1, float x2, float y2){
 }
 
 void enableLights(float arenaHeight, float arenaRadius){
-	glEnable(GL_LIGHT0);
-	/*glEnable(GL_LIGHT1);
-	glEnable(GL_LIGHT2);
-	glEnable(GL_LIGHT3);
-	glEnable(GL_LIGHT4);
-	glEnable(GL_LIGHT5);
-*/
-	GLfloat light_position[] = { 200, 100, 50, 1.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
-	glLightf(GL_LIGHT0,GL_SPOT_CUTOFF,89.0);
+
+	if(!noturnMode)
+	{
+		GLfloat light2_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+		GLfloat light2_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat light2_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat light2_position[] = { 0, 10, 0, 1.0 };
+		GLfloat spot_direction[] = { 0, 1, 0.0 };
+
+		glLightfv(GL_LIGHT2, GL_AMBIENT, light2_ambient);
+		glLightfv(GL_LIGHT2, GL_DIFFUSE, light2_diffuse);
+		glLightfv(GL_LIGHT2, GL_SPECULAR, light2_specular);
+		glLightfv(GL_LIGHT2, GL_POSITION, light2_position);
+		glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.5);
+		glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.5);
+		glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.2);
+
+		glLightf(GL_LIGHT2, GL_SPOT_CUTOFF, 180.0);
+		glLightfv(GL_LIGHT2, GL_SPOT_DIRECTION, spot_direction);
+		glLightf(GL_LIGHT2, GL_SPOT_EXPONENT, 1.0);
+
+		glEnable(GL_LIGHT0);
+		glEnable(GL_LIGHT2);
+		glDisable(GL_LIGHT1);
+	}
+	else
+	{
+		Point pos = player->get_position();
+		float angle = player->get_cAngle();
+
+		GLfloat light1_ambient[] = { 0.2, 0.2, 0.2, 1.0 };
+		GLfloat light1_diffuse[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat light1_specular[] = { 1.0, 1.0, 1.0, 1.0 };
+		GLfloat light1_position[] = { pos.x, pos.y, pos.z, 1.0 };
+		GLfloat spot_direction[] = { 1.0*cos((angle+90)*M_PI/180), 1.0*sin((angle+90)*M_PI/180), 0.0 };
+
+		glLightfv(GL_LIGHT1, GL_AMBIENT, light1_ambient);
+		glLightfv(GL_LIGHT1, GL_DIFFUSE, light1_diffuse);
+		glLightfv(GL_LIGHT1, GL_SPECULAR, light1_specular);
+		glLightfv(GL_LIGHT1, GL_POSITION, light1_position);
+		glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.5);
+		glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.5);
+		glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.2);
+
+		glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 25.0);
+		glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, spot_direction);
+		glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 1.0);
+
+		glEnable(GL_LIGHT1);
+		glDisable(GL_LIGHT0);
+		glDisable(GL_LIGHT2);
+	}
 
 	/*GLfloat light_position2[] = { 100, 200, 200, 1.0 };
 	glLightfv(GL_LIGHT1, GL_POSITION, light_position2);
@@ -667,8 +715,7 @@ void display(void)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glMatrixMode(GL_MODELVIEW);
 
-	//glMatrixMode(GL_VIEWPORT);
-  //glViewport(0,0,windowWidth,windowHeight);
+	enableLights(0,0);
 
 	glLoadIdentity();
 
@@ -700,11 +747,6 @@ void display(void)
 
 	changeCamera(0,0,windowWidth,(5.0/7.0)*windowHeight);
 
-	//Câmeras estáticas para testes
-	//gluLookAt(500,500,1200,0,0,0,-1,-1,1);
-	//gluLookAt(0,600,50,0,0,50,0,0,1);
-
-
 	switch(toggleCam)
   {
  		 case 1:
@@ -724,21 +766,23 @@ void display(void)
 				float cannonAngle = player->get_cnAngle();
 				float cannonAngleZ = player->get_cnAngleZ();
 
- 				 /* Bem parecido com o de cima, vamos implementar quando tiver o canhão */
- 				 gluLookAt(canonPosition.x,canonPosition.y,canonPosition.z,
-							canonPosition.x + (canonPosition.x - playerPos.x+sizeOfCar*xCameraRotated),
-					 		canonPosition.y + (canonPosition.y - playerPos.y+sizeOfCar*yCameraRotated),
-							canonPosition.z + (canonPosition.z - 10), //Camera at the top front of the car
-							cos(cannonAngleZ*M_PI/180)*-sin((cannonAngleZ+carAngle)*M_PI/180),
-							cos(cannonAngleZ*M_PI/180)*cos((cannonAngleZ+carAngle)*M_PI/180),
-							sin(cannonAngleZ*M_PI/180));
+				  float x = canonPosition.x;
+				  float newX = x - sin(M_PI*(carAngle+cannonAngle)/180.0);
+				  float y = canonPosition.y;
+				  float newY = y + cos(M_PI*(carAngle+cannonAngle)/180.0);
+				  float z = canonPosition.z;
+				  float newZ = z + sin(M_PI*(cannonAngleZ)/180.0);
+
+					gluLookAt(canonPosition.x,canonPosition.y,canonPosition.z,
+							canonPosition.x + (newX - x),
+					 		canonPosition.y + (newY - y),
+							canonPosition.z + (newZ - z),
+							0,
+							0,
+							1);
  				 break;
 		 }
  		 case 3:
-				 /* Brincar com isso hoje a noite */
-				 //x = r sinThetaXZ cosThetaXY
-				 //y = r sinThetaXZ sinThetaXY
-				 //z = r cosThetaXZ
 				 float cameraXYAngleRotated = XYAngle + player->get_cAngle();
 				 xCameraRotated = sin((XZAngle)*M_PI/180) * cos((cameraXYAngleRotated - 90)*M_PI/180);
 				 yCameraRotated = sin((XZAngle)*M_PI/180) * sin((cameraXYAngleRotated - 90)*M_PI/180);
@@ -792,8 +836,6 @@ void init (Color bgColor, float xlim1, float xlim2, float ylim1, float ylim2)
 	glEnable(GL_LIGHTING);
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_TEXTURE_2D);
-
-	enableLights(0,0);
 
 	//Initialize textures
 	asphaltTX = LoadTextureRAW("./images/asphalt.bmp");

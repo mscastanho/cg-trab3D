@@ -16,5 +16,5 @@ all: $(myObjects)
 
 .PHONY: clean
 clean:
-	-rm -f $(myObjects) trabalhocg
+	-rm -f $(myObjects) trabalhocg *.*~
 	@echo "Arquivos removidos com sucesso."

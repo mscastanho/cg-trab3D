@@ -42,13 +42,16 @@ void Bullet::draw(){
 void Bullet::update(float speed){
 
   float x = this->position.x;
+  float newX = x - speed*sin(M_PI*this->angleXY/180.0);
   float y = this->position.y;
+  float newY = y + speed*cos(M_PI*this->angleXY/180.0);
+  float z = this->position.z;
+  float newZ = z + speed*sin(M_PI*this->angleZ/180.0);
 
-  float r = sqrt(x*x + y*y);
-  this->position.x += -speed*sin(M_PI*this->angleXY/180.0);
-  this->position.y += speed*cos(M_PI*this->angleXY/180.0);
-
-  //this->position.z += speed*r/tan(M_PI*this->angleZ/180.0);
+  float r = sqrt((newX-x)*(newX-x) + (newY-y)*(newY-y));
+  this->position.x = newX;
+  this->position.y = newY;
+  this->position.z = newZ;
 }
 
 Point Bullet::get_position (){

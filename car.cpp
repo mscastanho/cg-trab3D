@@ -173,7 +173,7 @@ void Car::draw (bool useComplexModel){
 
     //Back wheels
     glPushMatrix();
-    glTranslatef(33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
+    glTranslatef(44.142*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
     glRotatef(this->wheelAngle,0,0,1.0);
     glRotatef(this->wheelSpinAngle,1.0,0,0);
     drawObject(wheelOBJ);
@@ -181,7 +181,7 @@ void Car::draw (bool useComplexModel){
     //drawRect(wWidth,wHeight,color,-(bWidth/2+waWidth+wWidth),-(axisMidY + wHeight/2));
 
     glPushMatrix();
-      glTranslatef(-33.856*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
+      glTranslatef(-44.142*scaleRatio,-37.738*scaleRatio,10*scaleRatio);
       glRotatef(this->wheelAngle,0,0,1.0);
       glRotatef(this->wheelSpinAngle,1.0,0,0);
       drawObject(wheelOBJ);
@@ -218,7 +218,7 @@ Point Car::getBulletInitPos (){
 
   Point pCanonAux = {0,0,0};
 
-  pCanon.z = 10 + 10*sin((canonAngleZ*M_PI)/180); //MUDAR
+  pCanon.z = position.z + position.z*sin((canonAngleZ*M_PI)/180); //MUDAR
 
   // Get new X and Y position with cannon Z angle
   float XYAngleRotated = canonAngle + carAngle;
@@ -231,14 +231,14 @@ Point Car::getBulletInitPos (){
   pCanonAux.y = CANON_HEIGHT*this->size*yRotated - CANON_HEIGHT*this->size*sin((90+XYAngleRotated)*M_PI/180);
 
   // Translate from the canon's end position
-  Point canonEndPos = {0,CANON_HEIGHT*this->size};
+  Point canonEndPos = {0,0.36*this->size};
   pCanon = translateFrom(pCanon,canonEndPos);
 
   // Rotate by the canon's rotation
   pCanon = rotateBy(pCanon,this->canonAngle);
 
   // Translate from canon position
-  Point canonPos = {0,BODY_HEIGHT*this->size/2};
+  Point canonPos = {0,0.2*this->size/2};
   pCanon = translateFrom(pCanon,canonPos);
 
   // Rotate by the car's rotation

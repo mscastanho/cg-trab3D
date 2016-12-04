@@ -380,7 +380,7 @@ void mouse(int botao, int estado, int x, int y){
 
 		if(estado == GLUT_DOWN)
 			mousePressed = true;
-		else if(mousePressed){
+		else if(mousePressed && gameStarted){
 			// In this case the mouse was pressed.
 			// trying to detect a press+release task
 			mousePressed = false;
@@ -457,8 +457,14 @@ void keyPress(unsigned char key, int x, int y)
       case '3':
           toggleCam = 3;
           break;
-	  case 'i':
-		  noturnMode = not(noturnMode);
+			case 'x':
+			case 'X':
+				useComplexModel = not(useComplexModel);
+				break;
+			case 'n':
+			case 'N':
+				noturnMode = not(noturnMode);
+					break;
       default:
           keyStatus[key] = 1;
   }
@@ -507,7 +513,7 @@ void idle (void)
 	pgy = gy;
 
 	float wheelAngle = player->get_wAngle();
-	bool wPressed, sPressed, aPressed, dPressed, mPressed, nPressed;
+	bool wPressed, sPressed, aPressed, dPressed, zPressed, xPressed, nPressed;
 
 	dPressed = (keyStatus['D'] == 1 || keyStatus['d'] == 1) && wheelAngle > -45+ANGLE_SPEED;
 
@@ -516,16 +522,6 @@ void idle (void)
 	wPressed = keyStatus['W'] == 1 || keyStatus['w'] == 1;
 
 	sPressed = keyStatus['S'] == 1 || keyStatus['s'] == 1;
-
-	mPressed = keyStatus['M'] == 1 || keyStatus['m'] == 1;
-
-	nPressed = keyStatus['N'] == 1 || keyStatus['n'] == 1;
-
-	if(mPressed)
-		useComplexModel = true;
-
-	if(nPressed)
-		useComplexModel = false;
 
 	// Check game start
 	if(!gameStarted && wPressed){

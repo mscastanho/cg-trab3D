@@ -1,0 +1,21 @@
+Instrucoes sobre as teclas:
+
+N -> Trocar entre modo noturno e diurno
+
+W,S,A,D -> Direcionais
+
+X -> Trocar entre modelo complexo (Importando .obj) e simples (paralelepipedo)
+     do carro
+
+1 -> Camera 1 (Primeira Pessoa)
+
+2 -> Camera 2 (Visao da ponta do canhao)
+
+3 -> Camera 3 (Terceira Pessoa)
+
+Mouse-> Movimentar canhao
+
+Botao direito do mouse -> Atirar
+
+Botao esquerdo do mouse -> Quando usando a camera 3, deve estar pressionado para
+                           orbitar a camera em volta do carro

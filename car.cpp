@@ -196,11 +196,13 @@ void Car::draw (bool useComplexModel){
       drawObject(cannonOBJ);
     glPopMatrix();
   }else{
-    glScalef(0.4,1.0,0.4);
+    glPushMatrix();
+    glScalef(0.4,1.0,0.3);
     glutSolidCube(L);
+    glPopMatrix();
     // Draw cannon
     glPushMatrix();
-      glTranslatef(0,0.5*L,0.4*L);
+      glTranslatef(0,17.5*scaleRatio,20*scaleRatio);
       glRotatef(this->canonAngle,0,0,1.0);
       glRotatef(this->canonAngleZ,1.0,0,0);
       glScalef(0.5*scaleRatio,1.2*scaleRatio,0.5*scaleRatio);
@@ -300,10 +302,11 @@ bool Car::outsideOf(Circle* c) const{
 }
 
 bool Car::outsideOf(Bullet* b) const{
-	float x1,x2,y1,y2,r1,r2;
+	float x1,x2,y1,y2,z1,z2,r1,r2;
 
 	x1 = this->position.x;
 	y1 = this->position.y;
+  z1 = this->position.z;
 	r1 = this->radius;
 
   Point bcenter = b->get_position();
@@ -311,14 +314,16 @@ bool Car::outsideOf(Bullet* b) const{
 
 	x2 = bcenter.x;
 	y2 = bcenter.y;
+  z2 = bcenter.z;
 	r2 = bradius;
 
-	float dist = sqrt(pow(x1-x2,2) + pow(y1-y2,2));
+	float dist = sqrt(pow(x1-x2,2) + pow(y1-y2,2) + pow(z1-z2,2));
 
 	if(dist >= r1 + r2)
 		return true;
-	else
-		return false;
+	else{
+    return false;
+  }
 }
 
 // This function calculates if a collision has occurred between this and another
